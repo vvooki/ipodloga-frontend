@@ -25,7 +25,7 @@ const Projects = () => {
           CREATE NEW PROJECT <MdOutlineAddBox className="add-icon" />
         </button>
       </div>
-      <div className="projects-container">
+      <div className="container projects-container">
         <div className="table-header table-grid">
           <p>name</p>
           <p>description</p>
