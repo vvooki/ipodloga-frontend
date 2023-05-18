@@ -51,12 +51,14 @@ const Projects = () => {
         {data.map((project) => {
           const { id, nazwa, opis, dataczas_utworzenia, status } = project;
           return (
-            <div className="project-item table-grid">
+            <div className="project-item table-grid" key={id}>
               <p>{nazwa}</p>
-              <p>{opis}</p>
+              <p>
+                {opis.length > 40 ? `${opis.substring(0, 40)}...` : `${opis}`}
+              </p>
               <span>
                 <p className={`status ${status ? 'in-progress' : 'finished'}`}>
-                  {status ? 'git' : 'nie git'}
+                  {status ? 'finished' : 'in progress'}
                 </p>
               </span>
               <p>{dataczas_utworzenia}</p>
