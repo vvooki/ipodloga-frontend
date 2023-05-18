@@ -1,9 +1,21 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import './css/sidebar.css';
 import avatar from '../images/avatar.svg';
 import { BiLogOut } from 'react-icons/bi';
 import { MdOutlineBookmarks, MdTaskAlt, MdOutlineChat } from 'react-icons/md';
+import { auth } from '../firebase';
+import { AuthContext } from '../context/AuthContext';
 const Sidebar = () => {
+  const { dispatch } = useContext(AuthContext);
+  const handleSignOut = () => {
+    auth
+      .signOut()
+      .then(() => {
+        dispatch({ type: 'LOGOUT' });
+      })
+      .catch((error) => alert(error.message));
+  };
+
   return (
     <section className="sidebar-section">
       <div className="avatar">
@@ -32,8 +44,7 @@ const Sidebar = () => {
         </a>
       </ul>
 
-      <button className="logout-btn">
-        {' '}
+      <button className="logout-btn" onClick={handleSignOut}>
         <BiLogOut className="logout-icon" /> Logout
       </button>
     </section>

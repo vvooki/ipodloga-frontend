@@ -2,10 +2,11 @@ import { useState, useEffect } from 'react';
 import { MdOutlineAddBox } from 'react-icons/md';
 import { HiOutlineDotsCircleHorizontal } from 'react-icons/hi';
 import './css/projects.css';
-import { projects } from './../data/projects';
+// import { projects } from './../data/projects';
 import AddProject from '../components/AddProject';
+import axios from 'axios';
 const Projects = () => {
-  const [data, setData] = useState(projects);
+  const [data, setData] = useState([]);
   const [show, setShow] = useState('modal-hide');
 
   const handleOnClick = () => {
@@ -15,7 +16,20 @@ const Projects = () => {
       setShow('modal-hide');
     }
   };
-  console.log(data);
+
+  const getProducts = async () => {
+    try {
+      const res = await axios.get(`http://localhost:8080/projekty`);
+      setData(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getProducts();
+  }, []);
+
   return (
     <section className="projects-section">
       <AddProject show={show} close={handleOnClick} />
@@ -35,16 +49,18 @@ const Projects = () => {
           <p>options</p>
         </div>
         {data.map((project) => {
-          const { name, description, status, start_date, end_date } = project;
+          const { id, nazwa, opis, dataczas_utworzenia, status } = project;
           return (
             <div className="project-item table-grid">
-              <p>{name}</p>
-              <p>{description}</p>
+              <p>{nazwa}</p>
+              <p>{opis}</p>
               <span>
-                <p className={`status ${status}`}>{status}</p>
+                <p className={`status ${status ? 'in-progress' : 'finished'}`}>
+                  {status ? 'git' : 'nie git'}
+                </p>
               </span>
-              <p>{start_date}</p>
-              <p>{end_date}</p>
+              <p>{dataczas_utworzenia}</p>
+              <p>{dataczas_utworzenia}</p>
               <button>
                 <p className="status">
                   <HiOutlineDotsCircleHorizontal />

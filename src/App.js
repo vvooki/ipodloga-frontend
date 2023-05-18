@@ -1,15 +1,26 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Projects from './pages/Projects';
 import SharedLayout from './pages/SharedLayout';
 import Login from './pages/Login';
 import Tasks from './pages/Tasks';
+import Register from './pages/Register';
+import { useContext } from 'react';
+import { AuthContext } from './context/AuthContext';
 function App() {
-  const admin = true;
+  const { currentUser } = useContext(AuthContext);
+
+  console.log(currentUser);
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/login" element={<Login />} />
-        <Route path="/" element={<SharedLayout />}>
+        <Route path="/register" element={<Register />} />
+        <Route
+          path="/"
+          element={
+            currentUser ? <SharedLayout /> : <Navigate replace to="/login" />
+          }
+        >
           <Route index element={<Projects />} />
           <Route path="/home" element={<Projects />} />
           <Route path="/tasks" element={<Tasks />} />
