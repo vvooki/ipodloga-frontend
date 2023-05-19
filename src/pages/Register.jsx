@@ -3,52 +3,29 @@ import illustration from './../images/login-illustration.svg';
 import './css/Login.css';
 import { Link, useNavigate } from 'react-router-dom';
 import { auth } from '../firebase';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 
 const Register = () => {
   const [email, setEmail] = useState('test@mail.com');
   const [password, setPassword] = useState('123456');
   const [password2, setPassword2] = useState('123456');
-  const [error, setError] = useState(true);
+  const [error, setError] = useState(false);
   let navigate = useNavigate();
   const timerRef = useRef(null);
   const handleSignUp = async (e) => {
     e.preventDefault();
-    setError(true);
-    if (password === password2) {
-      await auth
-        .createUserWithEmailAndPassword(email, password)
-        .then((userCredentials) => {
-          const user = userCredentials.user;
-          setError(false);
-        })
-        .catch((error) => setError(true));
-      const loading = toast.loading('Creating account...');
-      if (error === false) {
-        toast.success('Success! Account created.', { id: loading });
-        timerRef.current = setTimeout(() => navigate('/login'), 3000);
+    try {
+      if (password === password2) {
+        await auth.createUserWithEmailAndPassword(email, password);
+        navigate('/login');
+        toast.success('Success! Account created.');
       } else {
-        toast.error('Something went wrong...', { id: loading });
+        toast.error('Passwords is this same...');
       }
-      // toast.loading('Creating account');
-      // try {
-      //   const promise = auth.createUserWithEmailAndPassword(email, password);
-      //   toast.promise(promise, {
-      //     loading: 'Loading',
-      //     success: 'Success! Account created',
-      //     error: 'Error while creating account',
-      //   });
-      // } catch (error) {
-      //   setError(true);
-      //   alert('ustawiam error ', error.message);
-      // } finally {
-      //   if (!error) {
-      //     timerRef.current = setTimeout(() => navigate('/login'), 3000);
-      //   }
-      // }
-    } else {
-      console.log('entered passwords must be the same');
+    } catch (error) {
+      toast.error('Something went wrong...');
     }
+    console.log('email', email);
   };
 
   useEffect(() => {
@@ -109,7 +86,6 @@ const Register = () => {
           </p>
         </Link>
       </div>
-      <Toaster />
     </section>
   );
 };

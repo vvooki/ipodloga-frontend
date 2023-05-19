@@ -6,6 +6,7 @@ import Tasks from './pages/Tasks';
 import Register from './pages/Register';
 import { useContext } from 'react';
 import { AuthContext } from './context/AuthContext';
+import toast, { Toaster } from 'react-hot-toast';
 function App() {
   const { currentUser } = useContext(AuthContext);
 
@@ -26,6 +27,7 @@ function App() {
           <Route path="/tasks" element={<Tasks />} />
         </Route>
       </Routes>
+      <Toaster />
     </BrowserRouter>
   );
 }
