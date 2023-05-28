@@ -6,7 +6,7 @@ import { MdOutlineBookmarks, MdTaskAlt, MdOutlineChat } from 'react-icons/md';
 import { auth } from '../firebase';
 import { AuthContext } from '../context/AuthContext';
 const Sidebar = () => {
-  const { dispatch } = useContext(AuthContext);
+  const { dispatch, currentUser } = useContext(AuthContext);
   const handleSignOut = () => {
     auth
       .signOut()
@@ -21,7 +21,7 @@ const Sidebar = () => {
       <div className="avatar">
         <img src={avatar} alt="avatar" />
         <div>
-          <h2>JOHN</h2>
+          <h2>{currentUser.email}</h2>
           <p>project manager</p>
         </div>
       </div>

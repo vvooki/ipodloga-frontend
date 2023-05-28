@@ -5,6 +5,7 @@ import './css/projects.css';
 // import { projects } from './../data/projects';
 import AddProject from '../components/AddProject';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 const Projects = () => {
   const [data, setData] = useState([]);
   const [show, setShow] = useState('modal-hide');
@@ -17,7 +18,7 @@ const Projects = () => {
     }
   };
 
-  const getProducts = async () => {
+  const getProjects = async () => {
     try {
       const res = await axios.get(`http://localhost:8080/projekty`);
       setData(res.data);
@@ -27,7 +28,7 @@ const Projects = () => {
   };
 
   useEffect(() => {
-    getProducts();
+    getProjects();
   }, []);
 
   return (
@@ -51,7 +52,7 @@ const Projects = () => {
         {data.map((project) => {
           const { id, nazwa, opis, dataczas_utworzenia, status } = project;
           return (
-            <div className="project-item table-grid" key={id}>
+            <Link className="project-item table-grid" key={id}>
               <p>{nazwa}</p>
               <p>
                 {opis.length > 40 ? `${opis.substring(0, 40)}...` : `${opis}`}
@@ -68,7 +69,7 @@ const Projects = () => {
                   <HiOutlineDotsCircleHorizontal />
                 </p>
               </button>
-            </div>
+            </Link>
           );
         })}
       </div>

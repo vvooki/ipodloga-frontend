@@ -18,7 +18,24 @@
   grid-area: c;
 }
 
+.members {
+  margin-top: 1rem;
+  display: grid;
+  gap: 1rem;
+}
+
 .tasks-container .top-container {
   border: none;
   margin-bottom: 1rem;
+}
+
+.user-icon {
+  font-size: 1.2em;
+}
+
+.user {
+  font-size: 1.1em;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
