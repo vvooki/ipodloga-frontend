@@ -30,6 +30,37 @@
   margin-left: 0.5rem;
 }
 
+.search-container {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 25rem;
+  /* background-color: #434343; */
+  border: 1px solid rgba(0, 0, 0, 0.305);
+  border-radius: 1rem;
+  padding: 0.5rem 0.3rem;
+}
+
+.search-container label {
+  display: flex;
+  align-items: center;
+  font-size: 1.3rem;
+}
+
+.search-container input {
+  font-size: 1.1rem;
+  border: none;
+  outline: none;
+  width: 100%;
+  /* background-color: #434343; */
+  padding: 0rem 0.3rem;
+  color: rgba(0, 0, 0, 0.739);
+}
+
+.search-container input::placeholder {
+  color: rgba(0, 0, 0, 0.408);
+}
+
 .container {
   margin-top: 2rem;
   padding: 1rem;
