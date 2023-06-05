@@ -21,6 +21,8 @@ html {
   --clr-grey-200: #e6e6e6;
   --clr-grey-250: #c5c5c5;
   --clr-grey-300: #707070;
+  --clr-grey-400: #3f3f3f;
+  --clr-grey-500: #272727;
 
   /* fonts  */
   --small-text: 0.875rem;
@@ -123,13 +125,17 @@ button {
 }
 
 .dashboard {
-  min-width: 100%;
-  min-height: 100%;
+  width: 100%;
+  height: 100%;
   display: flex;
-  gap: 2rem;
+  overflow: hidden;
 }
 
 .content {
   width: 100%;
   height: 100%;
+}
+
+main {
+  margin: 1rem;
 }
