@@ -38,7 +38,9 @@ const Projects = () => {
   useEffect(() => {
     console.log('odpalam');
     console.log('Search', search);
-    const result = projects.filter(({ nazwa }) => nazwa.includes(search));
+    const result = projects.filter(
+      ({ nazwa }) => nazwa !== null && nazwa.includes(search)
+    );
     console.log('Result', result);
     if (search === '') {
       setData(projects);
@@ -81,10 +83,19 @@ const Projects = () => {
         {data.map((project) => {
           const { id, nazwa, opis, dataczas_utworzenia, status } = project;
           return (
-            <Link className="project-item table-grid" key={id}>
+            <Link
+              to={`project/${id}`}
+              className="project-item table-grid"
+              key={id}
+            >
               <p>{nazwa}</p>
               <p>
-                {opis.length > 40 ? `${opis.substring(0, 40)}...` : `${opis}`}
+                {}
+                {opis !== null
+                  ? opis.length > 40
+                    ? `${opis.substring(0, 40)}...`
+                    : `${opis}`
+                  : ''}
               </p>
               <span>
                 <p className={`status ${status ? 'in-progress' : 'finished'}`}>

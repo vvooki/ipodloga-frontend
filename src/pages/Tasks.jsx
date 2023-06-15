@@ -4,12 +4,18 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { HiOutlineDotsCircleHorizontal } from 'react-icons/hi';
 import { RxAvatar } from 'react-icons/rx';
+import { useLocation } from 'react-router-dom';
 
 const Tasks = () => {
+  const location = useLocation();
+  const projectId = location.pathname.split('/')[2];
+
   const [data, setData] = useState([]);
-  const getProjects = async () => {
+  const getProjectTasks = async () => {
     try {
-      const res = await axios.get(`http://localhost:8080/projekty`);
+      const res = await axios.get(
+        `http://localhost:8080/zadania/projekty/${projectId}`
+      );
       setData(res.data);
     } catch (error) {
       console.log(error);
@@ -17,7 +23,7 @@ const Tasks = () => {
   };
 
   useEffect(() => {
-    getProjects();
+    getProjectTasks();
   }, []);
 
   return (

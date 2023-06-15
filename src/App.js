@@ -24,7 +24,7 @@ function App() {
         >
           <Route index element={<Projects />} />
           <Route path="/home" element={<Projects />} />
-          <Route path="/tasks" element={<Tasks />} />
+          <Route path="/project/:idProject" element={<Tasks />} />
         </Route>
       </Routes>
       <Toaster />

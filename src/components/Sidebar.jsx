@@ -5,6 +5,7 @@ import { BiLogOut } from 'react-icons/bi';
 import { MdOutlineBookmarks, MdTaskAlt, MdOutlineChat } from 'react-icons/md';
 import { auth } from '../firebase';
 import { AuthContext } from '../context/AuthContext';
+import { Link } from 'react-router-dom';
 const Sidebar = () => {
   const { dispatch, currentUser } = useContext(AuthContext);
   const handleSignOut = () => {
@@ -27,21 +28,21 @@ const Sidebar = () => {
       </div>
 
       <ul className="sidebarList">
-        <a href="" className="active">
+        <Link to="/" href="" className="active">
           <li>
             <MdOutlineBookmarks /> Projects
           </li>
-        </a>
-        <a href="">
+        </Link>
+        <Link to="/" href="">
           <li>
             <MdTaskAlt /> Tasks
           </li>
-        </a>
-        <a href="">
+        </Link>
+        <Link to="/" href="">
           <li>
             <MdOutlineChat /> Chat
           </li>
-        </a>
+        </Link>
       </ul>
 
       <button className="logout-btn" onClick={handleSignOut}>
