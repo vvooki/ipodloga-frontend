@@ -139,11 +139,11 @@
 }
 
 .in-progress {
-  background-color: #f3a3a3;
+  background-color: #8dd689;
 }
 
 .finished {
-  background-color: #8dd689;
+  background-color: #f3a3a3;
 }
 
 .awaiting {

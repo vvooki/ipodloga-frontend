@@ -49,9 +49,17 @@ const Projects = () => {
     }
   }, [search]);
 
+  useEffect(() => {
+    if (show === 'modal-show') {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+  }, [show]);
+
   return (
     <section className="projects-section">
-      <AddProject show={show} close={handleOnClick} />
+      <AddProject show={show} close={handleOnClick} getProjects={getProjects} />
       <div className="top-container">
         <h2>Your current projects</h2>
         <button onClick={handleOnClick}>
@@ -98,9 +106,7 @@ const Projects = () => {
                   : ''}
               </p>
               <span>
-                <p className={`status ${status ? 'in-progress' : 'finished'}`}>
-                  {status ? 'finished' : 'in progress'}
-                </p>
+                <p className={`status ${status}`}>{status}</p>
               </span>
               <p>{dataczas_utworzenia}</p>
               <p>{dataczas_utworzenia}</p>

@@ -10,13 +10,26 @@ const Tasks = () => {
   const location = useLocation();
   const projectId = location.pathname.split('/')[2];
 
-  const [data, setData] = useState([]);
+  const [tasks, setTasks] = useState([]);
+  const [project, setProject] = useState([]);
+
+  const getProject = async () => {
+    try {
+      const res = await axios.get(
+        `http://localhost:8080/projekty/${projectId}`
+      );
+      setProject(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const getProjectTasks = async () => {
     try {
       const res = await axios.get(
         `http://localhost:8080/zadania/projekty/${projectId}`
       );
-      setData(res.data);
+      setTasks(res.data);
     } catch (error) {
       console.log(error);
     }
@@ -24,12 +37,13 @@ const Tasks = () => {
 
   useEffect(() => {
     getProjectTasks();
+    getProject();
   }, []);
 
   return (
     <section className="tasks-section">
       <div className="top-container">
-        <h2>Name of the project</h2>
+        <h2>{project.nazwa}</h2>
       </div>
       <div className="tasks-container container">
         <div className="top-container">
@@ -47,7 +61,7 @@ const Tasks = () => {
           <p>status</p>
           <p>options</p>
         </div>
-        {data.map((project) => {
+        {tasks.map((project) => {
           const { id, nazwa, opis, dataczas_utworzenia, status } = project;
           return (
             <div className="project-item table-grid" key={id}>
