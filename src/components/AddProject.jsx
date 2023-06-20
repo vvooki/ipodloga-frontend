@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
-import './css/addproject.css';
+import './css/modal.css';
 import { AiOutlineCloseCircle } from 'react-icons/ai';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 const AddProject = ({ show, close, getProjects }) => {
   const [name, setName] = useState('');
   const [status, setStatus] = useState('in-progress');
-  const [startDate, setStartDate] = useState('14/06/2023');
+  const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [description, setDescription] = useState('');
 
@@ -33,11 +33,6 @@ const AddProject = ({ show, close, getProjects }) => {
       console.log(error);
     }
   };
-
-  useEffect(() => {
-    const d = startDate.split('-', 3);
-    console.log(d[2] + '.' + d[1] + '.' + d[0]);
-  }, [startDate]);
 
   return (
     <section className={`project-form-section ${show}`}>

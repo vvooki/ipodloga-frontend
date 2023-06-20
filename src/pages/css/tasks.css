@@ -2,7 +2,7 @@
   display: grid;
   grid-template-areas:
     'a a a a a a a a'
-    'b b b c c c c c';
+    'b b b b b c c c';
   gap: 1rem;
 }
 
@@ -38,4 +38,8 @@
   display: flex;
   align-items: center;
   gap: 1rem;
+}
+
+.table-grid span {
+  margin: 1rem 0;
 }

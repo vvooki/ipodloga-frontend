@@ -13,7 +13,7 @@ const Projects = () => {
   const [show, setShow] = useState('modal-hide');
   const [search, setSearch] = useState('');
 
-  const handleOnClick = () => {
+  const handleModal = () => {
     if (show === 'modal-hide') {
       setShow('modal-show');
     } else {
@@ -59,10 +59,10 @@ const Projects = () => {
 
   return (
     <section className="projects-section">
-      <AddProject show={show} close={handleOnClick} getProjects={getProjects} />
+      <AddProject show={show} close={handleModal} getProjects={getProjects} />
       <div className="top-container">
         <h2>Your current projects</h2>
-        <button onClick={handleOnClick}>
+        <button onClick={handleModal}>
           CREATE NEW PROJECT <MdOutlineAddBox className="add-icon" />
         </button>
       </div>
@@ -89,7 +89,14 @@ const Projects = () => {
           <p>options</p>
         </div>
         {data.map((project) => {
-          const { id, nazwa, opis, dataczas_utworzenia, status } = project;
+          const {
+            id,
+            nazwa,
+            opis,
+            dataczas_utworzenia,
+            dataczas_ukonczenia,
+            status,
+          } = project;
           return (
             <Link
               to={`project/${id}`}
@@ -109,7 +116,7 @@ const Projects = () => {
                 <p className={`status ${status}`}>{status}</p>
               </span>
               <p>{dataczas_utworzenia}</p>
-              <p>{dataczas_utworzenia}</p>
+              <p>{dataczas_ukonczenia}</p>
               <button>
                 <p className="status">
                   <HiOutlineDotsCircleHorizontal />
