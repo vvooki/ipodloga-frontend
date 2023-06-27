@@ -22,7 +22,7 @@ const Sidebar = () => {
       <div className="avatar">
         <img src={avatar} alt="avatar" />
         <div>
-          <h2>{currentUser.email}</h2>
+          <h2>{currentUser.email.slice(0, 15)}</h2>
           <p>project manager</p>
         </div>
       </div>

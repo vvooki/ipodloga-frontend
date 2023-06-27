@@ -14,6 +14,17 @@ const Tasks = () => {
 
   const [tasks, setTasks] = useState([]);
   const [project, setProject] = useState([]);
+  const [members, setMembers] = useState([]);
+  const defaultEditData = {
+    isEdit: false,
+    deadline: '',
+    nazwa: '',
+    opis: '',
+    priority: '',
+    status: '',
+    type: '',
+  };
+  const [editData, setEditData] = useState(defaultEditData);
   const [showTasks, setShowTasks] = useState('modal-hide');
   const [showMember, setShowMember] = useState('modal-hide');
 
@@ -23,6 +34,7 @@ const Tasks = () => {
         setShowTasks('modal-show');
       } else {
         setShowTasks('modal-hide');
+        setEditData(defaultEditData);
       }
     } else if (modal === 2) {
       if (showMember === 'modal-hide') {
@@ -55,9 +67,21 @@ const Tasks = () => {
     }
   };
 
+  const getProjectMembers = async () => {
+    try {
+      const res = await axios.get(
+        `http://localhost:8080/student/${projectId}/students`
+      );
+      setMembers(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     getProjectTasks();
     getProject();
+    getProjectMembers();
   }, []);
 
   return (
@@ -67,8 +91,14 @@ const Tasks = () => {
         close={handleModal}
         getTasks={getProjectTasks}
         projectId={projectId}
+        editData={editData}
       />
-      <AddMember show={showMember} close={handleModal} projectId={projectId} />
+      <AddMember
+        show={showMember}
+        close={handleModal}
+        projectId={projectId}
+        updateMembers={getProjectMembers}
+      />
       <div className="top-container">
         <h2>{project.nazwa}</h2>
       </div>
@@ -90,9 +120,8 @@ const Tasks = () => {
           <p>options</p>
         </div>
         <div className="tasks-list">
-          {tasks.map((project) => {
-            const { id, nazwa, opis, status, type, priority, deadline } =
-              project;
+          {tasks.map((task) => {
+            const { id, nazwa, opis, status, type, priority, deadline } = task;
             return (
               <div className="project-item table-grid" key={id}>
                 <span>
@@ -116,7 +145,12 @@ const Tasks = () => {
                 <span>
                   <p className={`${status}`}>{status.replace('_', ' ')}</p>
                 </span>
-                <button>
+                <button
+                  onClick={() => {
+                    setEditData({ isEdit: true, ...task });
+                    handleModal(1);
+                  }}
+                >
                   <p>
                     <HiOutlineDotsCircleHorizontal />
                   </p>
@@ -134,9 +168,16 @@ const Tasks = () => {
           </button>
         </div>
         <div className="members">
-          <div className="user">
-            <RxAvatar className="user-icon" /> John Cena
-          </div>
+          {members.map((user) => {
+            return (
+              <span className="user" key={user.id}>
+                <RxAvatar className="user-icon" />
+                {(user.imie + ' ' + user.nazwisko).length <= 22
+                  ? user.imie + ' ' + user.nazwisko
+                  : (user.imie + ' ' + user.nazwisko).substring(0, 22) + '...'}
+              </span>
+            );
+          })}
         </div>
       </div>
     </section>

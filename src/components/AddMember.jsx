@@ -4,7 +4,7 @@ import { AiOutlineCloseCircle } from 'react-icons/ai';
 import { MdOutlineAddBox } from 'react-icons/md';
 import axios from 'axios';
 import toast from 'react-hot-toast';
-const AddMember = ({ show, close, projectId }) => {
+const AddMember = ({ show, close, projectId, updateMembers }) => {
   const [name, setName] = useState('');
   const [fetchedUsers, setFetchedUsers] = useState([]);
   const [userList, setUserList] = useState([]);
@@ -20,16 +20,8 @@ const AddMember = ({ show, close, projectId }) => {
       }
       toast.success('Success! Users has been added');
       setUserList([]);
+      updateMembers();
       close(2);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const getUsers = async () => {
-    try {
-      const res = await axios.get(`http://localhost:8080/student`);
-      setFetchedUsers(res.data);
     } catch (error) {
       console.log(error);
     }
@@ -47,6 +39,15 @@ const AddMember = ({ show, close, projectId }) => {
   const removeUserFromList = (user) => {
     const arr = userList.filter((u) => u !== user);
     setUserList(arr);
+  };
+
+  const getUsers = async () => {
+    try {
+      const res = await axios.get(`http://localhost:8080/student`);
+      setFetchedUsers(res.data);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
@@ -100,7 +101,7 @@ const AddMember = ({ show, close, projectId }) => {
             />
           </span>
 
-          <table className="user-list">
+          <section className="user-list">
             <div className="user-table-header">
               <p>ID</p>
               <p>NAME</p>
@@ -111,18 +112,22 @@ const AddMember = ({ show, close, projectId }) => {
 
             {fetchedUsers.map((user) => {
               return (
-                <div className="user-row" key={user.id}>
+                <div
+                  className="user-row"
+                  key={user.id}
+                  onClick={() => addToList(user)}
+                >
                   <p>{user.id.substring(0, 4)}...</p>
                   <p>{user.imie}</p>
                   <p>{user.nazwisko}</p>
                   <p>{user.email}</p>
-                  <button onClick={() => addToList(user)}>
+                  <button>
                     <MdOutlineAddBox className="add-user-btn" />
                   </button>
                 </div>
               );
             })}
-          </table>
+          </section>
         </div>
       </div>
     </section>

@@ -12,12 +12,22 @@ const Projects = () => {
   const [data, setData] = useState([]);
   const [show, setShow] = useState('modal-hide');
   const [search, setSearch] = useState('');
+  const defaultEditData = {
+    isEdit: false,
+    nazwa: '',
+    dataczas_utworzenia: '',
+    dataczas_ukonczenia: '',
+    status: '',
+    opis: '',
+  };
+  const [editData, setEditData] = useState(defaultEditData);
 
   const handleModal = () => {
     if (show === 'modal-hide') {
       setShow('modal-show');
     } else {
       setShow('modal-hide');
+      setEditData(defaultEditData);
     }
   };
 
@@ -59,7 +69,12 @@ const Projects = () => {
 
   return (
     <section className="projects-section">
-      <AddProject show={show} close={handleModal} getProjects={getProjects} />
+      <AddProject
+        show={show}
+        close={handleModal}
+        getProjects={getProjects}
+        editData={editData}
+      />
       <div className="top-container">
         <h2>Your current projects</h2>
         <button onClick={handleModal}>
@@ -98,31 +113,31 @@ const Projects = () => {
             status,
           } = project;
           return (
-            <Link
-              to={`project/${id}`}
-              className="project-item table-grid"
-              key={id}
-            >
-              <p>{nazwa}</p>
-              <p>
-                {}
+            <div className="project-item table-grid" key={id}>
+              <Link to={`project/${id}`}>{nazwa}</Link>
+              <Link to={`project/${id}`}>
                 {opis !== null
                   ? opis.length > 40
                     ? `${opis.substring(0, 40)}...`
                     : `${opis}`
                   : ''}
-              </p>
-              <span>
+              </Link>
+              <Link to={`project/${id}`}>
                 <p className={`status ${status}`}>{status}</p>
-              </span>
-              <p>{dataczas_utworzenia}</p>
-              <p>{dataczas_ukonczenia}</p>
-              <button>
+              </Link>
+              <Link to={`project/${id}`}>{dataczas_utworzenia}</Link>
+              <Link to={`project/${id}`}>{dataczas_ukonczenia}</Link>
+              <button
+                onClick={() => {
+                  handleModal();
+                  setEditData({ isEdit: true, ...project });
+                }}
+              >
                 <p className="status">
                   <HiOutlineDotsCircleHorizontal />
                 </p>
               </button>
-            </Link>
+            </div>
           );
         })}
       </div>

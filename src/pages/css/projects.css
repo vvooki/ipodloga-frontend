@@ -129,6 +129,10 @@
   text-transform: capitalize;
 }
 
+.project-item > * {
+  min-height: 4rem;
+}
+
 .status {
   font-weight: 500;
   border-radius: 0.6rem;

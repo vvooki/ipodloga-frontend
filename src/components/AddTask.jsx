@@ -3,15 +3,15 @@ import './css/modal.css';
 import { AiOutlineCloseCircle } from 'react-icons/ai';
 import axios from 'axios';
 import toast from 'react-hot-toast';
-const AddTask = ({ show, close, getTasks, projectId }) => {
-  const [name, setName] = useState('');
+const AddTask = ({ show, close, getTasks, projectId, editData }) => {
+  const [name, setName] = useState();
   const [type, setType] = useState('TASK');
   const [deadline, setDeadline] = useState('');
   const [status, setStatus] = useState('ON_GOING');
   const [priority, setPriority] = useState('HIGH');
   const [description, setDescription] = useState('');
 
-  console.log(name, status, type, priority, deadline, description);
+  console.log(editData, name, status, type, priority, deadline, description);
 
   const handleAddTask = async (e) => {
     e.preventDefault();
@@ -26,21 +26,65 @@ const AddTask = ({ show, close, getTasks, projectId }) => {
       projektId: projectId,
       deadline: d1[2] + '.' + d1[1] + '.' + d1[0],
     };
-    try {
-      const res = await axios.post(`http://localhost:8080/zadania`, data);
-      toast.success('Success! New task has been created');
-      close(1);
-      getTasks();
-    } catch (error) {
-      console.log(error);
+    if (editData.isEdit) {
+      console.log('wchodze do edycji', editData.id);
+      try {
+        const res = await axios.put(
+          `http://localhost:8080/zadania/zadanie/${editData.id}`,
+          data
+        );
+        toast.success('Success! Task has been updated');
+        close(1);
+        getTasks();
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      try {
+        const res = await axios.post(`http://localhost:8080/zadania`, data);
+        toast.success('Success! New task has been created');
+        close(1);
+        getTasks();
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
+
+  useEffect(() => {
+    if (editData.isEdit) {
+      setName(editData.nazwa);
+      setType(editData.type);
+      setPriority(editData.priority);
+      setStatus(editData.status);
+      if (editData.deadline !== '') {
+        if (editData.deadline.includes('-')) {
+          setDeadline(editData.deadline);
+        } else {
+          const d = editData.deadline.split('.', 3);
+          setDeadline(d[2] + '-' + d[1] + '-' + d[0]);
+        }
+      }
+      setDescription(editData.opis);
+    } else {
+      setName('');
+      setType('TASK');
+      setPriority('HIGH');
+      setStatus('ON_GOING');
+      setDeadline('');
+      setDescription('');
+    }
+  }, [editData]);
 
   return (
     <section className={`project-form-section ${show}`}>
       <div className="project-form-container">
         <div className="top-container">
-          <h2>CREATE NEW TASK</h2>
+          <h2>
+            {editData.isEdit
+              ? 'EDITING "' + editData.nazwa + '" TASK'
+              : 'CREATE NEW TASK'}
+          </h2>
           <button onClick={() => close(1)}>
             <AiOutlineCloseCircle />
           </button>
@@ -54,6 +98,7 @@ const AddTask = ({ show, close, getTasks, projectId }) => {
               id="name"
               placeholder="Task name"
               value={name}
+              required
               onChange={(e) => setName(e.target.value)}
             />
           </span>
@@ -77,6 +122,7 @@ const AddTask = ({ show, close, getTasks, projectId }) => {
                 name="deadline"
                 id="deadline"
                 value={deadline}
+                required
                 onChange={(e) => setDeadline(e.target.value)}
               />
             </span>
@@ -119,7 +165,9 @@ const AddTask = ({ show, close, getTasks, projectId }) => {
               onChange={(e) => setDescription(e.target.value)}
             ></textarea>
           </span>
-          <button type="submit">CREATE NEW TASK</button>
+          <button type="submit">
+            {editData.isEdit ? 'UPDATE TASK' : 'CREATE NEW TASK'}
+          </button>
         </form>
       </div>
     </section>
