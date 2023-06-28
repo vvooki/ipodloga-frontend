@@ -5,6 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { auth } from '../firebase';
 import toast, { Toaster } from 'react-hot-toast';
 import { AuthContext } from '../context/AuthContext';
+import axios from 'axios';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -13,17 +14,31 @@ const Login = () => {
 
   const { dispatch } = useContext(AuthContext);
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    auth
-      .signInWithEmailAndPassword(email, password)
-      .then((userCredentials) => {
-        const user = userCredentials.user;
-        dispatch({ type: 'LOGIN', payload: user });
-        console.log('Logged as', user.email);
-        navigate('/');
-      })
-      .catch((error) => toast.error('Wrong email and password...'));
+    try {
+      const userCredentials = await auth.signInWithEmailAndPassword(
+        email,
+        password
+      );
+      const user = await fetchUser(userCredentials.user.uid);
+      dispatch({ type: 'LOGIN', payload: user });
+      console.log('Logged as', user.email);
+      navigate('/');
+    } catch (error) {
+      console.log(error);
+      toast.error('Wrong email and password...');
+    }
+  };
+
+  const fetchUser = async (uid) => {
+    try {
+      const res = await axios.get(`http://localhost:8080/student/${uid}`);
+      console.log(res.data);
+      return res.data;
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (

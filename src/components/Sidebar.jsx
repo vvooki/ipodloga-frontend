@@ -22,7 +22,7 @@ const Sidebar = () => {
       <div className="avatar">
         <img src={avatar} alt="avatar" />
         <div>
-          <h2>{currentUser.email.slice(0, 15)}</h2>
+          <h2>{currentUser.imie}</h2>
           <p>project manager</p>
         </div>
       </div>
@@ -33,7 +33,7 @@ const Sidebar = () => {
             <MdOutlineBookmarks /> Projects
           </li>
         </Link>
-        <Link to="/" href="">
+        <Link to="tasks">
           <li>
             <MdTaskAlt /> Tasks
           </li>

@@ -1,7 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { AiOutlineSend } from 'react-icons/ai';
 import './css/chat.css';
+import { AuthContext } from '../context/AuthContext';
 const Chat = () => {
+  const { dispatch, currentUser } = useContext(AuthContext);
+  console.log(currentUser.email);
   return (
     <section className="chat-section">
       <section className="chats-list">
@@ -11,7 +14,7 @@ const Chat = () => {
       </section>
       <section className="chat-window">
         <div className="chat-window-name">
-          <h2>Project CCC</h2>
+          <h2>{currentUser.email}</h2>
         </div>
         <div className="messages-container">
           <span className="message-text user-message">
@@ -33,6 +36,32 @@ const Chat = () => {
             Ale ostra jazda bez trzymanki Ale ostra jazda bez trzymanki Ale
             ostra jazda bez trzymanki Ale ostra jazda bez trzymanki Ale ostra
             jazda bez trzymanki Ale ostra jazda bez trzymanki
+          </span>
+          <span className="message-text user-message">
+            Ale ostra jazda bez trzymanki Ale ostra jazda bez trzymanki Ale
+            ostra jazda bez trzymanki Ale ostra jazda bez trzymanki Ale ostra
+            jazda bez trzymanki Ale ostra jazda bez trzymanki
+          </span>
+          <span className="message-text user-message">
+            Ale ostra jazda bez trzymanki Ale ostra jazda bez trzymanki Ale
+            ostra jazda bez trzymanki Ale ostra jazda bez trzymanki Ale ostra
+            jazda bez trzymanki Ale ostra jazda bez trzymanki
+          </span>
+          <span className="message-text others-message">
+            Witam witam szefie
+          </span>
+          <span className="message-text user-message">
+            Ale ostra jazda bez trzymanki Ale ostra jazda bez trzymanki Ale
+            ostra jazda bez trzymanki Ale ostra jazda bez trzymanki Ale ostra
+            jazda bez trzymanki Ale ostra jazda bez trzymanki
+          </span>
+          <span className="message-text user-message">
+            Ale ostra jazda bez trzymanki Ale ostra jazda bez trzymanki Ale
+            ostra jazda bez trzymanki Ale ostra jazda bez trzymanki Ale ostra
+            jazda bez trzymanki Ale ostra jazda bez trzymanki
+          </span>
+          <span className="message-text others-message">
+            Witam witam szefie
           </span>
           <span className="message-text user-message">
             Ale ostra jazda bez trzymanki Ale ostra jazda bez trzymanki Ale

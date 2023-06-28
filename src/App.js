@@ -4,6 +4,7 @@ import SharedLayout from './pages/SharedLayout';
 import Login from './pages/Login';
 import Tasks from './pages/Tasks';
 import Chat from './pages/Chat';
+import UserTasks from './pages/UserTasks';
 import Register from './pages/Register';
 import { useContext } from 'react';
 import { AuthContext } from './context/AuthContext';
@@ -27,6 +28,7 @@ function App() {
           <Route path="/home" element={<Projects />} />
           <Route path="/project/:idProject" element={<Tasks />} />
           <Route path="/chat" element={<Chat />} />
+          <Route path="/tasks" element={<UserTasks />} />
         </Route>
       </Routes>
       <Toaster />

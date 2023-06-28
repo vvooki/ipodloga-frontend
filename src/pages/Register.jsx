@@ -5,6 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { auth } from '../firebase';
 import toast from 'react-hot-toast';
 import axios from 'axios';
+import { type } from '@testing-library/user-event/dist/type';
 
 const Register = () => {
   const [email, setEmail] = useState('test@mail.com');
@@ -44,7 +45,7 @@ const Register = () => {
       imie: name,
       nazwisko: surname,
       nr_indeksu: index,
-      student_id: Number(uid),
+      student_id: uid,
     };
     try {
       const res = await axios.post(`http://localhost:8080/student`, data);
