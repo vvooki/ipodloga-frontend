@@ -43,11 +43,21 @@
 
 .chat-window-name {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   place-items: center;
   width: 95%;
   margin: 0 auto;
   border-bottom: 1px solid rgba(0, 0, 0, 0.187);
+}
+
+.chat-window-name button {
+  font-size: 1.4rem;
+  display: grid;
+  place-items: center;
+}
+
+.chat-window-name button:hover {
+  color: #8b85f5;
 }
 
 .messages-container {
@@ -57,6 +67,20 @@
   padding: 2rem;
   overflow-y: auto;
   max-height: 75vh;
+}
+
+.messages-container > span {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.user-prompt h4 {
+  text-align: right;
+  padding: 0 0.3rem;
+}
+
+.others-prompt h4 {
+  padding: 0 0.3rem;
 }
 
 .message-text {

@@ -51,6 +51,21 @@ const AddTask = ({ show, close, getTasks, projectId, editData }) => {
     }
   };
 
+  const handleDeleteTask = async () => {
+    try {
+      const res = await axios.delete(
+        `http://localhost:8080/zadania/${editData.id}`
+      );
+      toast('Task has been removed', {
+        icon: '🗑️',
+      });
+      getTasks();
+      close(1);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     if (editData.isEdit) {
       setName(editData.nazwa);
@@ -80,12 +95,19 @@ const AddTask = ({ show, close, getTasks, projectId, editData }) => {
     <section className={`project-form-section ${show}`}>
       <div className="project-form-container">
         <div className="top-container">
-          <h2>
-            {editData.isEdit
-              ? 'EDITING "' + editData.nazwa + '" TASK'
-              : 'CREATE NEW TASK'}
-          </h2>
-          <button onClick={() => close(1)}>
+          <span>
+            <h2>
+              {editData.isEdit
+                ? 'EDITING TASK - ' + editData.nazwa
+                : 'CREATE NEW TASK'}
+            </h2>
+            {editData.isEdit && (
+              <button className="delete-btn" onClick={handleDeleteTask}>
+                DELETE TASK
+              </button>
+            )}
+          </span>
+          <button className="close-modal-btn" onClick={close}>
             <AiOutlineCloseCircle />
           </button>
         </div>

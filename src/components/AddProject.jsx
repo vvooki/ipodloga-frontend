@@ -48,6 +48,21 @@ const AddProject = ({ show, close, getProjects, editData }) => {
     }
   };
 
+  const handleDeleteProject = async () => {
+    try {
+      const res = await axios.delete(
+        `http://localhost:8080/projekty/${editData.id}`
+      );
+      toast('Project has been removed', {
+        icon: '🗑️',
+      });
+      getProjects();
+      close();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     if (editData.isEdit) {
       setName(editData.nazwa);
@@ -82,12 +97,19 @@ const AddProject = ({ show, close, getProjects, editData }) => {
     <section className={`project-form-section ${show}`}>
       <div className="project-form-container">
         <div className="top-container">
-          <h2>
-            {editData.isEdit
-              ? 'EDITING PROJECT - ' + editData.nazwa
-              : 'CREATE NEW PROJECT'}
-          </h2>
-          <button onClick={close}>
+          <span>
+            <h2>
+              {editData.isEdit
+                ? 'EDITING PROJECT - ' + editData.nazwa
+                : 'CREATE NEW PROJECT'}
+            </h2>
+            {editData.isEdit && (
+              <button className="delete-btn" onClick={handleDeleteProject}>
+                DELETE PROJECT
+              </button>
+            )}
+          </span>
+          <button className="close-modal-btn" onClick={close}>
             <AiOutlineCloseCircle />
           </button>
         </div>

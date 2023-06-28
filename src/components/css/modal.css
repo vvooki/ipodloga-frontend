@@ -18,8 +18,28 @@
   border-radius: 1rem;
 }
 
-.project-form-container .top-container button {
+.project-form-container .top-container .close-modal-btn {
   font-size: 2.3rem;
+}
+
+.top-container .delete-btn {
+  background-color: rgb(215, 65, 65);
+  color: var(--clr-primary-white);
+  padding: 0.2rem 0.5rem;
+  border-radius: 0.3rem;
+  font-size: 0.8rem;
+  height: fit-content;
+}
+
+.top-container .delete-btn:hover {
+  background-color: rgb(133, 23, 23);
+  color: var(--clr-primary-white);
+}
+
+.top-container > span {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
 }
 
 .form {

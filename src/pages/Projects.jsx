@@ -3,11 +3,12 @@ import { MdOutlineAddBox } from 'react-icons/md';
 import { HiOutlineDotsCircleHorizontal } from 'react-icons/hi';
 import { BiSearchAlt } from 'react-icons/bi';
 import './css/projects.css';
-// import { projects } from './../data/projects';
 import AddProject from '../components/AddProject';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import { auth } from '../firebase';
 const Projects = () => {
+  console.log();
   const [projects, setProjects] = useState([]);
   const [data, setData] = useState([]);
   const [show, setShow] = useState('modal-hide');
