@@ -166,10 +166,10 @@ const Tasks = () => {
                   <p>{nazwa}</p>
                 </span>
                 <span>
-                  <p className={``}>{type}</p>
+                  <p className={`badge ${type}`}>{type}</p>
                 </span>
                 <span>
-                  <p className={``}>{priority}</p>
+                  <p className={`badge ${priority}`}>{priority}</p>
                 </span>
                 <span>
                   {opis.length > 40 ? `${opis.substring(0, 40)}...` : `${opis}`}
@@ -178,7 +178,9 @@ const Tasks = () => {
                   <p>{deadline}</p>
                 </span>
                 <span>
-                  <p className={`${status}`}>{status.replace('_', ' ')}</p>
+                  <p className={`badge ${status}`}>
+                    {status.replace('_', ' ')}
+                  </p>
                 </span>
                 <span>
                   {
@@ -192,7 +194,7 @@ const Tasks = () => {
                       {members.map((member) => {
                         return (
                           <option value={member.id} key={member.id}>
-                            {member.imie}
+                            {member.imie} {member.nazwisko.substring(0, 1)}.
                           </option>
                         );
                       })}

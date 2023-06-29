@@ -53,3 +53,38 @@
   background-color: #484848;
   color: #ffffff;
 }
+
+.project-item .badge {
+  padding: 0.1rem 0.5rem;
+  border-radius: 0.4rem;
+}
+
+.TASK {
+  border: 1px solid black;
+  color: #157afe;
+}
+
+.ERROR {
+  border: 1px solid black;
+  color: #fe0c0c;
+}
+
+.HIGH {
+  background-color: #50f07b;
+}
+
+.LOW {
+  background-color: #ffee8d;
+}
+
+.ON_GOING {
+  background-color: #eacfff;
+}
+
+.NOT_ASSIGNED {
+  background-color: #ccccce;
+}
+
+.DONE {
+  background-color: #e1feb1;
+}

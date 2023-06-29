@@ -42,33 +42,41 @@ const Projects = () => {
   };
 
   const getProjects = async () => {
-    try {
-      const res = await axios.get(
-        `http://localhost:8080/projekty?strona=${currentPage}&iloscNaStrone=3`
-      );
-      setProjects(res.data.data);
-      setData(res.data.data);
-      let arr = [];
-      if (res.data.totalPage < 2) {
-        arr.push(1);
-      } else {
-        for (let i = 0; i < res.data.totalPage; i++) {
-          arr.push(i + 1);
+    if (currentUser.isAdmin) {
+      try {
+        const res = await axios.get(
+          `http://localhost:8080/projekty?strona=${currentPage}&iloscNaStrone=3`
+        );
+        setProjects(res.data.data);
+        setData(res.data.data);
+        let arr = [];
+        if (res.data.totalPage < 2) {
+          arr.push(1);
+        } else {
+          for (let i = 0; i < res.data.totalPage; i++) {
+            arr.push(i + 1);
+          }
         }
+        setPagination({
+          currentPage: res.data.currentPage,
+          totalPage: res.data.totalPage,
+        });
+        setPages(arr);
+      } catch (error) {
+        console.log(error);
       }
-      setPagination({
-        currentPage: res.data.currentPage,
-        totalPage: res.data.totalPage,
-      });
-      setPages(arr);
-    } catch (error) {
-      console.log(error);
+    } else {
+      const res = await axios.get(
+        `http://localhost:8080/student/${currentUser.id}/projekty`
+      );
+      setProjects(res.data);
+      setData(res.data);
     }
   };
 
-  // useEffect(() => {
-  //   getProjects();
-  // }, []);
+  useEffect(() => {
+    getProjects();
+  }, []);
 
   useEffect(() => {
     getProjects();
@@ -169,18 +177,21 @@ const Projects = () => {
           );
         })}
       </div>
-      <footer>
-        {pages.map((p) => {
-          return (
-            <button
-              className={`${currentPage === p && 'current-page'}`}
-              onClick={() => setCurrentPage(p)}
-            >
-              {p}
-            </button>
-          );
-        })}
-      </footer>
+      {currentUser.isAdmin && (
+        <footer>
+          {pages.map((p) => {
+            return (
+              <button
+                key={p}
+                className={`${currentPage === p && 'current-page'}`}
+                onClick={() => setCurrentPage(p)}
+              >
+                {p}
+              </button>
+            );
+          })}
+        </footer>
+      )}
     </section>
   );
 };
