@@ -59,7 +59,7 @@ const AddMember = ({ show, close, projectId, updateMembers }) => {
       <div className="project-form-container">
         <div className="top-container">
           <h2>ADD USER TO PROJECT</h2>
-          <button onClick={() => close(2)}>
+          <button className="close-modal-btn" onClick={() => close(2)}>
             <AiOutlineCloseCircle />
           </button>
         </div>

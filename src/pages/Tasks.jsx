@@ -1,17 +1,18 @@
 import { MdOutlineAddBox } from 'react-icons/md';
 import './css/tasks.css';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import { HiOutlineDotsCircleHorizontal } from 'react-icons/hi';
 import { RxAvatar } from 'react-icons/rx';
 import { useLocation } from 'react-router-dom';
 import AddTask from '../components/AddTask';
 import AddMember from '../components/AddMember';
-
+import toast from 'react-hot-toast';
+import { AuthContext } from '../context/AuthContext';
 const Tasks = () => {
+  const { currentUser } = useContext(AuthContext);
   const location = useLocation();
   const projectId = location.pathname.split('/')[2];
-
   const [tasks, setTasks] = useState([]);
   const [project, setProject] = useState([]);
   const [members, setMembers] = useState([]);
@@ -29,19 +30,23 @@ const Tasks = () => {
   const [showMember, setShowMember] = useState('modal-hide');
 
   const handleModal = (modal) => {
-    if (modal === 1) {
-      if (showTasks === 'modal-hide') {
-        setShowTasks('modal-show');
-      } else {
-        setShowTasks('modal-hide');
-        setEditData(defaultEditData);
+    if (currentUser.isAdmin) {
+      if (modal === 1) {
+        if (showTasks === 'modal-hide') {
+          setShowTasks('modal-show');
+        } else {
+          setShowTasks('modal-hide');
+          setEditData(defaultEditData);
+        }
+      } else if (modal === 2) {
+        if (showMember === 'modal-hide') {
+          setShowMember('modal-show');
+        } else {
+          setShowMember('modal-hide');
+        }
       }
-    } else if (modal === 2) {
-      if (showMember === 'modal-hide') {
-        setShowMember('modal-show');
-      } else {
-        setShowMember('modal-hide');
-      }
+    } else {
+      toast.error('You need admin permissions to open this window');
     }
   };
 
@@ -78,11 +83,35 @@ const Tasks = () => {
     }
   };
 
+  const getUser = (id) => {
+    const u = members.find((m) => m.id === id);
+    console.log('TUTAJ: ', u.imie);
+  };
+
   useEffect(() => {
+    getProjectMembers();
     getProjectTasks();
     getProject();
-    getProjectMembers();
   }, []);
+
+  const handleUpdateTaskUser = async (task, userId) => {
+    console.log(task, userId);
+    const data = {
+      ...task,
+      studentId: userId,
+    };
+    console.log('DANE USERA', data);
+    try {
+      const res = await axios.put(
+        `http://localhost:8080/zadania/zadanie/${task.id}`,
+        data
+      );
+      toast.success('Success! New user has been assigned to the task');
+      getProjectTasks();
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <section className="tasks-section">
@@ -121,7 +150,16 @@ const Tasks = () => {
         </div>
         <div className="tasks-list">
           {tasks.map((task) => {
-            const { id, nazwa, opis, status, type, priority, deadline } = task;
+            const {
+              id,
+              nazwa,
+              opis,
+              status,
+              type,
+              priority,
+              deadline,
+              studentId,
+            } = task;
             return (
               <div className="project-item table-grid" key={id}>
                 <span>
@@ -143,7 +181,23 @@ const Tasks = () => {
                   <p className={`${status}`}>{status.replace('_', ' ')}</p>
                 </span>
                 <span>
-                  <p className={`${status}`}>{status.replace('_', ' ')}</p>
+                  {
+                    <select
+                      name="user"
+                      value={studentId ? studentId : ''}
+                      onChange={(e) =>
+                        handleUpdateTaskUser(task, e.target.value)
+                      }
+                    >
+                      {members.map((member) => {
+                        return (
+                          <option value={member.id} key={member.id}>
+                            {member.imie}
+                          </option>
+                        );
+                      })}
+                    </select>
+                  }
                 </span>
                 <button
                   onClick={() => {

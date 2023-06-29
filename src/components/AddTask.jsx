@@ -27,7 +27,6 @@ const AddTask = ({ show, close, getTasks, projectId, editData }) => {
       deadline: d1[2] + '.' + d1[1] + '.' + d1[0],
     };
     if (editData.isEdit) {
-      console.log('wchodze do edycji', editData.id);
       try {
         const res = await axios.put(
           `http://localhost:8080/zadania/zadanie/${editData.id}`,
@@ -107,10 +106,11 @@ const AddTask = ({ show, close, getTasks, projectId, editData }) => {
               </button>
             )}
           </span>
-          <button className="close-modal-btn" onClick={close}>
+          <button className="close-modal-btn" onClick={() => close(1)}>
             <AiOutlineCloseCircle />
           </button>
         </div>
+
         <form className="form" onSubmit={handleAddTask}>
           <span>
             <label htmlFor="name">Task Name</label>

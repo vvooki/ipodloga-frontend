@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { MdOutlineAddBox } from 'react-icons/md';
 import { HiOutlineDotsCircleHorizontal } from 'react-icons/hi';
 import { BiSearchAlt } from 'react-icons/bi';
@@ -7,10 +7,15 @@ import AddProject from '../components/AddProject';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { auth } from '../firebase';
+import { AuthContext } from '../context/AuthContext';
+import { toast } from 'react-hot-toast';
 const Projects = () => {
-  console.log();
+  const { currentUser } = useContext(AuthContext);
   const [projects, setProjects] = useState([]);
   const [data, setData] = useState([]);
+  const [pagination, setPagination] = useState({});
+  const [pages, setPages] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
   const [show, setShow] = useState('modal-hide');
   const [search, setSearch] = useState('');
   const defaultEditData = {
@@ -24,30 +29,52 @@ const Projects = () => {
   const [editData, setEditData] = useState(defaultEditData);
 
   const handleModal = () => {
-    if (show === 'modal-hide') {
-      setShow('modal-show');
+    if (currentUser.isAdmin) {
+      if (show === 'modal-hide') {
+        setShow('modal-show');
+      } else {
+        setShow('modal-hide');
+        setEditData(defaultEditData);
+      }
     } else {
-      setShow('modal-hide');
-      setEditData(defaultEditData);
+      toast.error('You need admin permissions to open this window');
     }
   };
 
   const getProjects = async () => {
     try {
-      const res = await axios.get(`http://localhost:8080/projekty`);
-      setProjects(res.data);
-      setData(res.data);
+      const res = await axios.get(
+        `http://localhost:8080/projekty?strona=${currentPage}&iloscNaStrone=3`
+      );
+      setProjects(res.data.data);
+      setData(res.data.data);
+      let arr = [];
+      if (res.data.totalPage < 2) {
+        arr.push(1);
+      } else {
+        for (let i = 0; i < res.data.totalPage; i++) {
+          arr.push(i + 1);
+        }
+      }
+      setPagination({
+        currentPage: res.data.currentPage,
+        totalPage: res.data.totalPage,
+      });
+      setPages(arr);
     } catch (error) {
       console.log(error);
     }
   };
 
-  useEffect(() => {
-    getProjects();
-  }, []);
+  // useEffect(() => {
+  //   getProjects();
+  // }, []);
 
   useEffect(() => {
-    console.log('odpalam');
+    getProjects();
+  }, [currentPage]);
+
+  useEffect(() => {
     console.log('Search', search);
     const result = projects.filter(
       ({ nazwa }) => nazwa !== null && nazwa.includes(search)
@@ -142,6 +169,18 @@ const Projects = () => {
           );
         })}
       </div>
+      <footer>
+        {pages.map((p) => {
+          return (
+            <button
+              className={`${currentPage === p && 'current-page'}`}
+              onClick={() => setCurrentPage(p)}
+            >
+              {p}
+            </button>
+          );
+        })}
+      </footer>
     </section>
   );
 };

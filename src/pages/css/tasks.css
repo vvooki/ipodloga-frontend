@@ -43,3 +43,13 @@
 .table-grid span {
   margin: 1rem 0;
 }
+
+.table-grid select {
+  border-radius: 0.25rem;
+  padding: 0.2rem 0.4rem;
+  text-align: center;
+  outline: none;
+  border: none;
+  background-color: #484848;
+  color: #ffffff;
+}

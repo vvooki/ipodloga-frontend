@@ -1,0 +1,144 @@
+.all-users-section {
+  display: grid;
+  height: 100%;
+  width: 100%;
+  gap: 2rem;
+}
+.user-list {
+  box-shadow: var(--box-shadow);
+  display: grid;
+  min-height: 10rem;
+  padding: 0.7rem;
+  max-height: 50vh;
+  height: 100%;
+  overflow: scroll;
+  overflow-x: hidden;
+}
+
+.user-table-header {
+  padding: 0 0.5rem;
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-columns: 22% 22% 22% 22% 12%;
+  color: var(--clr-grey-300);
+}
+
+.user-table-header *:nth-child(5) {
+  text-align: center;
+}
+
+.user-row {
+  padding: 0 0.5rem;
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-columns: 22% 22% 22% 22% 12%;
+  cursor: pointer;
+}
+
+.user-row *:nth-child(5) {
+  text-align: center;
+}
+
+.user-row:hover {
+  background-color: var(--clr-grey-100);
+}
+
+.user-row button {
+  all: unset;
+}
+
+.user-row button:hover {
+  background-color: transparent;
+  color: var(--clr-primary-purple);
+}
+
+.users-to-add-list {
+  background-color: var(--clr-grey-200);
+  padding: 1rem;
+  border-radius: 1rem;
+  display: flex !important;
+  justify-content: none;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.users-to-add-list span {
+  width: fit-content;
+  background-color: var(--clr-primary-purple);
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.4rem;
+  color: var(--clr-primary-white);
+  cursor: pointer;
+  transition: ease-in-out 250ms;
+}
+
+.users-to-add-list span:hover {
+  background-color: rgb(110, 11, 11);
+}
+
+.users-to-add-container {
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: none;
+}
+
+.users-to-add-container p {
+  margin: 0;
+  text-transform: uppercase;
+  color: var(--clr-grey-300);
+}
+
+.add-users-btn {
+  background-color: #0e8c53 !important;
+  text-transform: uppercase;
+}
+
+.add-users-btn:hover {
+  background-color: #057b05 !important;
+}
+
+.edit-user-container {
+  box-shadow: var(--box-shadow);
+  min-height: 20vh;
+  padding: 1rem;
+}
+
+.edit-user-container form {
+  margin-top: 1rem;
+}
+
+.edit-user-container form div {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  width: 100%;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.edit-user-container form div > span {
+  display: grid;
+}
+
+.edit-user-container form input,
+.edit-user-container form select {
+  border-radius: 0.5rem;
+  outline: none;
+  border: 1px solid rgb(84, 84, 84);
+  padding: 0.4rem;
+  font-size: 1rem;
+}
+
+.edit-user-container form button {
+  margin-top: 1rem;
+  width: 100%;
+  text-align: center;
+  background-color: var(--clr-primary-purple);
+  color: white;
+  padding: 0.5rem 0;
+  border-radius: 1rem;
+}
+
+.edit-user-container form button:hover {
+  background-color: var(--clr-primary-purple-dark);
+}

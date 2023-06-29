@@ -2,7 +2,12 @@ import { useContext, useEffect } from 'react';
 import './css/sidebar.css';
 import avatar from '../images/avatar.svg';
 import { BiLogOut } from 'react-icons/bi';
-import { MdOutlineBookmarks, MdTaskAlt, MdOutlineChat } from 'react-icons/md';
+import {
+  MdOutlineBookmarks,
+  MdTaskAlt,
+  MdOutlineChat,
+  MdTagFaces,
+} from 'react-icons/md';
 import { auth } from '../firebase';
 import { AuthContext } from '../context/AuthContext';
 import { Link, useLocation } from 'react-router-dom';
@@ -28,6 +33,8 @@ const Sidebar = () => {
       if (loc === 'tasks') return true;
     } else if (n === 3) {
       if (loc === 'chat') return true;
+    } else if (n === 4) {
+      if (loc === 'users') return true;
     } else return false;
   };
 
@@ -37,7 +44,7 @@ const Sidebar = () => {
         <img src={avatar} alt="avatar" />
         <div>
           <h2>{currentUser.imie}</h2>
-          <p>project manager</p>
+          <p>{currentUser.isAdmin ? 'Project manager' : 'Developer'}</p>
         </div>
       </div>
 
@@ -55,6 +62,12 @@ const Sidebar = () => {
         <Link to="chat" className={`${isActive(3) && 'active'}`}>
           <li>
             <MdOutlineChat /> Chat
+          </li>
+        </Link>
+
+        <Link to="users" className={`${isActive(4) && 'active'}`}>
+          <li>
+            <MdTagFaces /> {currentUser.isAdmin ? 'Users' : 'Edit profile'}
           </li>
         </Link>
       </ul>

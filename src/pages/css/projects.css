@@ -170,12 +170,30 @@
   color: rgb(134, 47, 47);
 }
 
-@keyframes slideaway {
-  from {
-    display: block;
-  }
-  to {
-    transform: translateY(40px);
-    opacity: 0;
-  }
+.projects-section footer {
+  margin-top: 1rem;
+  padding: 0 1rem;
+  width: 100%;
+  display: flex;
+  gap: 2rem;
+}
+
+.projects-section footer > button {
+  font-size: 1rem;
+  display: grid;
+  place-items: center;
+  padding: 0.4rem 1rem;
+  border-radius: 2rem;
+  box-shadow: var(--box-shadow);
+  background-color: #d6d3d3;
+}
+
+.projects-section footer > button:hover {
+  background-color: #8c8c8c;
+  color: white;
+}
+
+.current-page {
+  background-color: #8c8c8c !important;
+  color: white;
 }

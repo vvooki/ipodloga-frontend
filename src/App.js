@@ -9,6 +9,7 @@ import Register from './pages/Register';
 import { useContext } from 'react';
 import { AuthContext } from './context/AuthContext';
 import toast, { Toaster } from 'react-hot-toast';
+import AllUsers from './pages/AllUsers';
 function App() {
   const { currentUser } = useContext(AuthContext);
 
@@ -29,6 +30,7 @@ function App() {
           <Route path="/project/:idProject" element={<Tasks />} />
           <Route path="/chat" element={<Chat />} />
           <Route path="/tasks" element={<UserTasks />} />
+          <Route path="/users" element={<AllUsers />} />
         </Route>
       </Routes>
       <Toaster />

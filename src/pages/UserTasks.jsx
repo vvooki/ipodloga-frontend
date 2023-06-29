@@ -12,7 +12,7 @@ const UserTasks = () => {
   const getUserTasks = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:8080/student/5Emt1bQrAagvM2FMYZW7/zadania`
+        `http://localhost:8080/student/${currentUser.id}/zadania`
       );
       setTasks(res.data);
     } catch (error) {
@@ -33,17 +33,6 @@ const UserTasks = () => {
         </button>
       </div>
       <div className="container projects-container">
-        <span className="search-container">
-          <label htmlFor="search">
-            <BiSearchAlt className="search-icon" />
-          </label>
-          <input
-            type="text"
-            name="search"
-            id="search"
-            placeholder="Search..."
-          />
-        </span>
         <div className="table-header table-grid">
           <p>name</p>
           <p>type</p>
@@ -51,8 +40,6 @@ const UserTasks = () => {
           <p>description</p>
           <p>deadline</p>
           <p>status</p>
-          <p>user</p>
-          <p>options</p>
         </div>
         <div className="tasks-list">
           {tasks.map((task) => {
@@ -77,14 +64,6 @@ const UserTasks = () => {
                 <span>
                   <p className={`${status}`}>{status.replace('_', ' ')}</p>
                 </span>
-                <span>
-                  <p className={`${status}`}>{status.replace('_', ' ')}</p>
-                </span>
-                <button>
-                  <p>
-                    <HiOutlineDotsCircleHorizontal />
-                  </p>
-                </button>
               </div>
             );
           })}
