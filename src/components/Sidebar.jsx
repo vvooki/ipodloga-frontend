@@ -15,7 +15,6 @@ const Sidebar = () => {
   const location = useLocation();
   const loc = location.pathname.split('/')[1];
 
-  console.log(loc);
   const { dispatch, currentUser } = useContext(AuthContext);
   const handleSignOut = () => {
     auth
@@ -43,7 +42,7 @@ const Sidebar = () => {
       <div className="avatar">
         <img src={avatar} alt="avatar" />
         <div>
-          <h2>{currentUser.imie}</h2>
+          <h2>{currentUser.firstName}</h2>
           <p>{currentUser.isAdmin ? 'Project manager' : 'Developer'}</p>
         </div>
       </div>

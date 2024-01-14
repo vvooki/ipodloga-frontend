@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import illustration from './../images/login-illustration.svg';
 import './css/Login.css';
 import { Link, useNavigate } from 'react-router-dom';
@@ -17,36 +17,34 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const userCredentials = await auth.signInWithEmailAndPassword(
+      const userCredentials = {
         email,
-        password
+        password,
+      };
+
+      const user = await axios.post(
+        'http://localhost:8080/api/auth/login',
+        userCredentials,
       );
-      const user = await fetchUser(userCredentials.user.uid);
-      dispatch({ type: 'LOGIN', payload: user });
+      dispatch({ type: 'LOGIN', payload: user.data });
       console.log('Logged as', user.email);
       navigate('/');
     } catch (error) {
       console.log(error);
-      toast.error('Wrong email and password...');
-    }
-  };
-
-  const fetchUser = async (uid) => {
-    try {
-      const res = await axios.get(`http://localhost:8080/student/${uid}`);
-      console.log(res.data);
-      return res.data;
-    } catch (error) {
-      console.log(error);
+      toast.error('Wrong email or password');
     }
   };
 
   return (
-    <section className="login-section">
-      <div className="illustration-container">
-        <img src={illustration} alt="login illustration" />
+    <section className="flex items-center justify-center h-screen">
+      <div className="flex-1 hidden lg:grid bg-slate-100 h-full justify-center items-center">
+        <img
+          src={illustration}
+          alt="login illustration"
+          className="w-[65%] h-auto mx-auto"
+        />
       </div>
-      <div className="login-container">
+      <div className="login-container flex-1">
         <div className="login-text">
           <h2>Sign in to iPodloga</h2>
           <p>Start managing your projects with ease.</p>
@@ -75,7 +73,9 @@ const Login = () => {
               placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;"
             />
           </div>
-          <button type="submit">Login</button>
+          <button type="submit" className="w-full">
+            Login
+          </button>
         </form>
         <Link to="/register">
           <p>

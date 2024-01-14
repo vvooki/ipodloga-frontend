@@ -1,62 +1,57 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import './css/modal.css';
 import { AiOutlineCloseCircle } from 'react-icons/ai';
 import axios from 'axios';
 import toast from 'react-hot-toast';
-const AddProject = ({ show, close, getProjects, editData }) => {
+import { useAppDispatch, useAppSelector } from '../hooks/useRedux';
+import { addProject, updateProject } from '../redux/thunks/projectThunk';
+import { AuthContext } from '../context/AuthContext';
+const AddProject = ({ visible, close, isEdit }) => {
+  const { currentUser } = useContext(AuthContext);
+
   const [name, setName] = useState('');
   const [status, setStatus] = useState('in-progress');
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
   const [description, setDescription] = useState('');
 
-  console.log(name, status, startDate, endDate, description);
+  const project = useAppSelector((state) => state.project.project);
+  const dispatch = useAppDispatch();
 
   const handleAddProject = async (e) => {
     e.preventDefault();
-    const d1 = startDate.split('-', 3);
-    const d2 = endDate.split('-', 3);
     const data = {
-      id: '1',
-      nazwa: name,
-      opis: description,
-      status: status,
-      dataczas_utworzenia: d1[2] + '.' + d1[1] + '.' + d1[0],
-      dataczas_ukonczenia: d2[2] + '.' + d2[1] + '.' + d2[0],
+      name,
+      description,
+      status,
+      creationDateTime: startDate,
+      completionDateTime: endDate,
     };
-    if (editData.isEdit) {
-      try {
-        const res = await axios.put(
-          `http://localhost:8080/projekty/projekt/${editData.id}`,
-          data
-        );
-        toast.success('Success! Project has been updated');
-        close();
-        getProjects();
-      } catch (error) {
-        console.log(error);
-      }
+    if (isEdit) {
+      dispatch(
+        updateProject({
+          id: project.id,
+          project: data,
+          token: currentUser.accessToken,
+        }),
+      );
+      toast.success('Success! Project has been updated');
+      close();
     } else {
-      try {
-        const res = await axios.post(`http://localhost:8080/projekty`, data);
-        toast.success('Success! New project has been created');
-        close();
-        getProjects();
-      } catch (error) {
-        console.log(error);
-      }
+      dispatch(addProject({ project: data, token: currentUser.accessToken }));
+      toast.success('Success! New project has been created');
+      close();
     }
   };
 
   const handleDeleteProject = async () => {
     try {
       const res = await axios.delete(
-        `http://localhost:8080/projekty/${editData.id}`
+        `http://localhost:8080/projekty/${project.id}`,
       );
       toast('Project has been removed', {
         icon: '🗑️',
       });
-      getProjects();
       close();
     } catch (error) {
       console.log(error);
@@ -64,46 +59,26 @@ const AddProject = ({ show, close, getProjects, editData }) => {
   };
 
   useEffect(() => {
-    if (editData.isEdit) {
-      setName(editData.nazwa);
-      setStatus(editData.status);
-      if (editData.dataczas_utworzenia !== '') {
-        if (editData.dataczas_utworzenia.includes('-')) {
-          setStartDate(editData.dataczas_utworzenia);
-        } else {
-          const d = editData.dataczas_utworzenia.split('.', 3);
-          setStartDate(d[2] + '-' + d[1] + '-' + d[0]);
-        }
-      }
-      if (editData.dataczas_ukonczenia !== '') {
-        if (editData.dataczas_ukonczenia.includes('-')) {
-          setEndDate(editData.dataczas_ukonczenia);
-        } else {
-          const d = editData.dataczas_ukonczenia.split('.', 3);
-          setEndDate(d[2] + '-' + d[1] + '-' + d[0]);
-        }
-      }
-      setDescription(editData.opis);
-    } else {
-      setName('');
-      setStatus('in-progress');
-      setStartDate('');
-      setEndDate('');
-      setDescription('');
+    if (isEdit) {
+      setName(project.name);
+      setStatus(project.status);
+      // setStartDate(project.creationDateTime);
+      // setEndDate(project.completionDateTime);
+      setDescription(project.description);
     }
-  }, [editData]);
+  }, [isEdit]);
 
   return (
-    <section className={`project-form-section ${show}`}>
+    <section className={`project-form-section flex`}>
       <div className="project-form-container">
         <div className="top-container">
           <span>
             <h2>
-              {editData.isEdit
-                ? 'EDITING PROJECT - ' + editData.nazwa
+              {isEdit
+                ? 'EDITING PROJECT - ' + project.name
                 : 'CREATE NEW PROJECT'}
             </h2>
-            {editData.isEdit && (
+            {isEdit && (
               <button className="delete-btn" onClick={handleDeleteProject}>
                 DELETE PROJECT
               </button>
@@ -172,7 +147,7 @@ const AddProject = ({ show, close, getProjects, editData }) => {
             ></textarea>
           </span>
           <button type="submit">
-            {editData.isEdit ? 'UPDATE PROJECT' : 'CREATE NEW PROJECT'}
+            {isEdit ? 'UPDATE PROJECT' : 'CREATE NEW PROJECT'}
           </button>
         </form>
       </div>
