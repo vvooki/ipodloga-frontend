@@ -10,8 +10,12 @@ import { auth } from '../firebase';
 import { AuthContext } from '../context/AuthContext';
 import { toast } from 'react-hot-toast';
 import { useAppDispatch, useAppSelector } from '../hooks/useRedux';
-import { getProjects } from '../redux/thunks/projectThunk';
+import {
+  getProjects,
+  getProjectsForStudent,
+} from '../redux/thunks/projectThunk';
 import { setProject } from '../redux/features/projectSlice';
+import { format } from 'date-fns';
 const Projects = () => {
   const { currentUser } = useContext(AuthContext);
   const [data, setData] = useState([]);
@@ -30,15 +34,32 @@ const Projects = () => {
   console.log(projects);
 
   useEffect(() => {
-    console.log(currentUser.isAdmin);
-    dispatch(
-      getProjects({
-        page: currentPage,
-        limit: 10,
-        token: currentUser.accessToken,
-      }),
-    );
-  }, [dispatch, pages]);
+    if (currentUser.isAdmin) {
+      dispatch(
+        getProjects({
+          page: currentPage,
+          limit: 10,
+          token: currentUser.accessToken,
+        }),
+      );
+    } else {
+      dispatch(
+        getProjectsForStudent({
+          id: currentUser.id,
+          page: currentPage,
+          limit: 10,
+          token: currentUser.accessToken,
+        }),
+      );
+    }
+  }, [
+    currentPage,
+    currentUser.accessToken,
+    currentUser.id,
+    currentUser.isAdmin,
+    dispatch,
+    pages,
+  ]);
 
   useEffect(() => {
     if (show === 'modal-show') {
@@ -115,7 +136,11 @@ const Projects = () => {
               completionDateTime,
             } = project;
             return (
-              <div className="project-item table-grid" key={id}>
+              <div
+                className="project-item table-grid"
+                key={id}
+                onClick={() => dispatch(setProject(project))}
+              >
                 <Link to={`project/${id}`}>{name}</Link>
                 <Link to={`project/${id}`}>
                   {description !== null
@@ -127,8 +152,12 @@ const Projects = () => {
                 <Link to={`project/${id}`}>
                   <p className={`status ${status}`}>{status}</p>
                 </Link>
-                <Link to={`project/${id}`}>{creationDateTime}</Link>
-                <Link to={`project/${id}`}>{completionDateTime}</Link>
+                <Link to={`project/${id}`}>
+                  {format(creationDateTime, 'dd.MM.yyyy')}
+                </Link>
+                <Link to={`project/${id}`}>
+                  {format(completionDateTime, 'dd.MM.yyyy')}
+                </Link>
                 <button onClick={() => handleEditProject(project)}>
                   <p className="status flex justify-center">
                     <HiOutlineDotsCircleHorizontal />

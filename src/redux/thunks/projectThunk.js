@@ -20,6 +20,25 @@ export const getProjects = createAsyncThunk(
   },
 );
 
+export const getProjectsForStudent = createAsyncThunk(
+  'project/getProjectsForStudent',
+  async ({ id, page, limit, token }, { rejectWithValue }) => {
+    try {
+      const res = await axios.get(
+        `http://localhost:8080/api/student-projects/projects/${id}?page=${page}&pageSize=${limit}`,
+        {
+          headers: {
+            authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      return res.data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  },
+);
+
 export const addProject = createAsyncThunk(
   'project/addProject',
   async ({ project, token }, { rejectWithValue }) => {
@@ -44,7 +63,6 @@ export const updateProject = createAsyncThunk(
   'project/updateProject',
   async ({ id, project, token }, { rejectWithValue }) => {
     try {
-      console.log('wchodze', id, token);
       const res = await axios.put(
         `http://localhost:8080/api/projects/${id}`,
         project,
@@ -62,13 +80,12 @@ export const updateProject = createAsyncThunk(
   },
 );
 
-export const getProjectssadad = createAsyncThunk(
-  'project/getProjects',
-  async ({ page, limit, token }, { rejectWithValue }) => {
-    console.log('wchodze');
+export const getProjectMembers = createAsyncThunk(
+  'project/projectMembers',
+  async ({ projectId, token }, { rejectWithValue }) => {
     try {
       const res = await axios.get(
-        `http://localhost:8080/api/projects?page=${page}&pageSize=${limit}`,
+        `http://localhost:8080/api/student-projects/students/${projectId}`,
         {
           headers: {
             authorization: `Bearer ${token}`,

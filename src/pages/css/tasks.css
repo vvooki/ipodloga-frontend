@@ -70,7 +70,13 @@
 }
 
 .HIGH {
-  background-color: #50f07b;
+  background-color: #1bc735;
+  color: white;
+}
+
+.MEDIUM {
+  background-color: #e3922f;
+  color: white;
 }
 
 .LOW {

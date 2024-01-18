@@ -1,10 +1,18 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { addProject, getProjects, updateProject } from '../thunks/projectThunk';
+import {
+  addProject,
+  getProjectMembers,
+  getProjects,
+  getProjectsForStudent,
+  updateProject,
+} from '../thunks/projectThunk';
 import { REDUX_STATUSES } from '../../constants/constants';
 
 const initialState = {
   projects: null,
   project: null,
+  projectMembersList: null,
+  getProjectMembersStatus: null,
   getProjectsStatus: null,
   addProjectStatus: null,
 };
@@ -29,6 +37,32 @@ export const projectSlice = createSlice({
     });
     builder.addCase(getProjects.rejected, (state) => {
       state.getProjectsStatus = REDUX_STATUSES.rejected;
+    });
+
+    // getProjectsListForStudent
+    builder.addCase(getProjectsForStudent.pending, (state) => {
+      state.getProjectsStatus = REDUX_STATUSES.pending;
+    });
+    builder.addCase(getProjectsForStudent.fulfilled, (state, { payload }) => {
+      state.getProjectsStatus = REDUX_STATUSES.fulfilled;
+      if (!payload) return;
+      state.projects = payload;
+    });
+    builder.addCase(getProjectsForStudent.rejected, (state) => {
+      state.getProjectsStatus = REDUX_STATUSES.rejected;
+    });
+
+    // getProjectMembers
+    builder.addCase(getProjectMembers.pending, (state) => {
+      state.getProjectMembersStatus = REDUX_STATUSES.pending;
+    });
+    builder.addCase(getProjectMembers.fulfilled, (state, { payload }) => {
+      state.getProjectMembersStatus = REDUX_STATUSES.fulfilled;
+      if (!payload) return;
+      state.projectMembersList = payload;
+    });
+    builder.addCase(getProjectMembers.rejected, (state) => {
+      state.getProjectMembersStatus = REDUX_STATUSES.rejected;
     });
 
     // addProject
