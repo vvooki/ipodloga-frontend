@@ -5,32 +5,30 @@ import { BiSearchAlt } from 'react-icons/bi';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
+import { useAppDispatch, useAppSelector } from '../hooks/useRedux';
+import { getStudentTasks } from '../redux/thunks/taskThunk';
+import { format } from 'date-fns';
 const UserTasks = () => {
-  const [tasks, setTasks] = useState([]);
   const { currentUser } = useContext(AuthContext);
+
+  const dispatch = useAppDispatch();
   console.log(currentUser.uid);
-  const getUserTasks = async () => {
-    try {
-      const res = await axios.get(
-        `http://localhost:8080/student/${currentUser.id}/zadania`
-      );
-      setTasks(res.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+
+  const tasks = useAppSelector((state) => state.task.tasks);
+
   useEffect(() => {
-    getUserTasks();
+    dispatch(
+      getStudentTasks({
+        studentId: currentUser.id,
+        token: currentUser.accessToken,
+      }),
+    );
   }, []);
 
-  console.log(tasks);
   return (
     <section className="projects-section">
       <div className="top-container">
-        <h2>Your current projects</h2>
-        <button>
-          CREATE NEW PROJECT <MdOutlineAddBox className="add-icon" />
-        </button>
+        <h2>YOUR TASKS</h2>
       </div>
       <div className="container projects-container">
         <div className="table-header table-grid">
@@ -43,26 +41,38 @@ const UserTasks = () => {
         </div>
         <div className="tasks-list">
           {tasks.map((task) => {
-            const { id, nazwa, opis, status, type, priority, deadline } = task;
+            const {
+              id,
+              name,
+              description,
+              task_status,
+              task_type,
+              task_priority,
+              deadline,
+            } = task;
             return (
               <div className="project-item table-grid" key={id}>
                 <span>
-                  <p>{nazwa}</p>
+                  <p>{name}</p>
                 </span>
                 <span>
-                  <p className={``}>{type}</p>
+                  <p className={`badge ${task_type}`}>{task_type}</p>
                 </span>
                 <span>
-                  <p className={``}>{priority}</p>
+                  <p className={`badge ${task_priority}`}>{task_priority}</p>
                 </span>
                 <span>
-                  {opis.length > 40 ? `${opis.substring(0, 40)}...` : `${opis}`}
+                  {description.length > 40
+                    ? `${description.substring(0, 40)}...`
+                    : `${description}`}
                 </span>
                 <span>
-                  <p>{deadline}</p>
+                  <p>{format(deadline, 'dd.MM.yyyy')}</p>
                 </span>
                 <span>
-                  <p className={`${status}`}>{status.replace('_', ' ')}</p>
+                  <p className={`badge ${task_status}`}>
+                    {task_status.replace('_', ' ')}
+                  </p>
                 </span>
               </div>
             );

@@ -86,9 +86,7 @@ export const projectSlice = createSlice({
       state.addProjectStatus = REDUX_STATUSES.fulfilled;
       if (!payload) return;
       state.projects = state.projects.map((project) => {
-        console.log(project.id, payload.id);
         if (project.id === payload.id) {
-          console.log('znalezione1');
           return {
             id: payload.id,
             name: payload.name,

@@ -83,11 +83,11 @@
   background-color: #ffee8d;
 }
 
-.ON_GOING {
+.IN-PROGRESS {
   background-color: #eacfff;
 }
 
-.NOT_ASSIGNED {
+.TO-DO {
   background-color: #ccccce;
 }
 

@@ -7,10 +7,11 @@ import {
   MdTaskAlt,
   MdOutlineChat,
   MdTagFaces,
+  MdCalendarViewWeek,
 } from 'react-icons/md';
 import { auth } from '../firebase';
 import { AuthContext } from '../context/AuthContext';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, NavLink, useLocation } from 'react-router-dom';
 const Sidebar = () => {
   const location = useLocation();
   const loc = location.pathname.split('/')[1];
@@ -25,18 +26,6 @@ const Sidebar = () => {
       .catch((error) => alert(error.message));
   };
 
-  const isActive = (n) => {
-    if (n === 1) {
-      if (loc === 'projects' || loc === '') return true;
-    } else if (n === 2) {
-      if (loc === 'tasks') return true;
-    } else if (n === 3) {
-      if (loc === 'chat') return true;
-    } else if (n === 4) {
-      if (loc === 'users') return true;
-    } else return false;
-  };
-
   return (
     <section className="sidebar-section">
       <div className="avatar">
@@ -48,23 +37,28 @@ const Sidebar = () => {
       </div>
 
       <ul className="sidebarList">
-        <Link to="/" className={`${isActive(1) && 'active'}`}>
+        <NavLink to="/" className={({ isActive }) => isActive && 'active'}>
           <li>
             <MdOutlineBookmarks /> Projects
           </li>
-        </Link>
-        <Link to="tasks" className={`${isActive(2) && 'active'}`}>
+        </NavLink>
+        <NavLink to="tasks" className={({ isActive }) => isActive && 'active'}>
           <li>
             <MdTaskAlt /> Tasks
           </li>
-        </Link>
-        <Link to="chat" className={`${isActive(3) && 'active'}`}>
+        </NavLink>
+        <NavLink to="board" className={({ isActive }) => isActive && 'active'}>
+          <li>
+            <MdCalendarViewWeek /> Kanban
+          </li>
+        </NavLink>
+        <NavLink to="chat" className={({ isActive }) => isActive && 'active'}>
           <li>
             <MdOutlineChat /> Chat
           </li>
-        </Link>
+        </NavLink>
 
-        <Link to="users" className={`${isActive(4) && 'active'}`}>
+        <Link to="users" className={({ isActive }) => isActive && 'active'}>
           <li>
             <MdTagFaces /> {currentUser.isAdmin ? 'Users' : 'Edit profile'}
           </li>

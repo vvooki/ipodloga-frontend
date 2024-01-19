@@ -162,9 +162,9 @@ const AddTask = ({ show, close, projectId, isEdit }) => {
                   value={status}
                   onChange={(e) => setStatus(e.target.value)}
                 >
+                  <option value="TO-DO">TO-DO</option>
+                  <option value="IN-PROGRESS">IN-PROGRESS</option>
                   <option value="DONE">DONE</option>
-                  <option value="ON_GOING">ON GOING</option>
-                  <option value="NOT_ASSIGNED">NOT ASSIGNED</option>
                 </select>
               </span>
               <span>
