@@ -11,7 +11,7 @@ import { REDUX_STATUSES } from '../../constants/constants';
 const initialState = {
   projects: null,
   project: null,
-  projectMembersList: null,
+  projectMembersList: [],
   getProjectMembersStatus: null,
   getProjectsStatus: null,
   addProjectStatus: null,

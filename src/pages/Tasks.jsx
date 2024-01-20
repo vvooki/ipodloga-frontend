@@ -68,25 +68,6 @@ const Tasks = () => {
     dispatch(getProjectTasks({ projectId, token }));
   }, [dispatch, projectId, token]);
 
-  const handleUpdateTaskUser = async (task, userId) => {
-    console.log(task, userId);
-    const data = {
-      ...task,
-      studentId: userId,
-    };
-    console.log('DANE USERA', data);
-    try {
-      const res = await axios.put(
-        `http://localhost:8080/zadania/zadanie/${task.id}`,
-        data,
-      );
-      toast.success('Success! New user has been assigned to the task');
-      // getProjectTasks();
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   if (project && tasks)
     return (
       <section className="tasks-section">
@@ -96,12 +77,12 @@ const Tasks = () => {
           isEdit={isEdit}
           projectId={projectId}
         />
-        {/* <AddMember
-        show={showMember}
-        close={handleModal}
-        projectId={projectId}
-        updateMembers={getProjectMembers}
-      /> */}
+        <AddMember
+          show={isAddMemberModalVisible}
+          close={() => setisAddMemberModalVisible(false)}
+          projectId={projectId}
+          members={members}
+        />
         <div className="top-container">
           <h2>{project.name}</h2>
         </div>
@@ -128,42 +109,45 @@ const Tasks = () => {
             <p>options</p>
           </div>
           <div className="tasks-list">
-            {tasks.map((task) => {
-              const {
-                id,
-                name,
-                description,
-                task_status,
-                task_type,
-                task_priority,
-                deadline,
-              } = task;
-              return (
-                <div className="project-item table-grid" key={id}>
-                  <span>
-                    <p>{name}</p>
-                  </span>
-                  <span>
-                    <p className={`badge ${task_type}`}>{task_type}</p>
-                  </span>
-                  <span>
-                    <p className={`badge ${task_priority}`}>{task_priority}</p>
-                  </span>
-                  <span>
-                    {description.length > 40
-                      ? `${description.substring(0, 40)}...`
-                      : `${description}`}
-                  </span>
-                  <span>
-                    <p>{format(deadline, 'dd.MM.yyyy')}</p>
-                  </span>
-                  <span>
-                    <p className={`badge ${task_status}`}>
-                      {task_status.replace('_', ' ')}
-                    </p>
-                  </span>
-                  <span>
-                    {/* {
+            {tasks &&
+              tasks.map((task, index) => {
+                const {
+                  id,
+                  name,
+                  description,
+                  task_status,
+                  task_type,
+                  task_priority,
+                  deadline,
+                } = task;
+                return (
+                  <div className="project-item table-grid" key={index}>
+                    <span>
+                      <p>{name}</p>
+                    </span>
+                    <span>
+                      <p className={`badge ${task_type}`}>{task_type}</p>
+                    </span>
+                    <span>
+                      <p className={`badge ${task_priority}`}>
+                        {task_priority}
+                      </p>
+                    </span>
+                    <span>
+                      {description.length > 40
+                        ? `${description.substring(0, 40)}...`
+                        : `${description}`}
+                    </span>
+                    <span>
+                      <p>{format(deadline, 'dd.MM.yyyy')}</p>
+                    </span>
+                    <span>
+                      <p className={`badge ${task_status}`}>
+                        {task_status.replace('_', ' ')}
+                      </p>
+                    </span>
+                    <span>
+                      {/* {
                       <select
                         name="user"
                         value={studentId ? studentId : ''}
@@ -180,43 +164,46 @@ const Tasks = () => {
                         })}
                       </select>
                     } */}
-                    test user
-                  </span>
-                  <button
-                    onClick={() => {
-                      dispatch(setTask(task));
-                      setIsAddTaskModalVisible(true);
-                      setIsEdit(true);
-                    }}
-                  >
-                    <p>
-                      <HiOutlineDotsCircleHorizontal />
-                    </p>
-                  </button>
-                </div>
-              );
-            })}
+                      test user
+                    </span>
+                    <button
+                      onClick={() => {
+                        dispatch(setTask(task));
+                        setIsAddTaskModalVisible(true);
+                        setIsEdit(true);
+                      }}
+                    >
+                      <p>
+                        <HiOutlineDotsCircleHorizontal />
+                      </p>
+                    </button>
+                  </div>
+                );
+              })}
           </div>
         </div>
         <div className="members-container container">
           <div className="top-container">
             <h3>Members</h3>
-            <button onClick={() => handleModal(2)}>
+            <button onClick={() => setisAddMemberModalVisible(true)}>
               <MdOutlineAddBox className="add-icon" />
             </button>
           </div>
           <div className="members">
-            {members.map((user) => {
-              return (
-                <span className="user" key={user.id}>
-                  <RxAvatar className="user-icon" />
-                  {(user.firstName + ' ' + user.lastName).length <= 22
-                    ? user.firstName + ' ' + user.lastName
-                    : (user.firstName + ' ' + user.lastName).substring(0, 22) +
-                      '...'}
-                </span>
-              );
-            })}
+            {members &&
+              members.map((user) => {
+                return (
+                  <span className="user" key={user.id}>
+                    <RxAvatar className="user-icon" />
+                    {(user.firstName + ' ' + user.lastName).length <= 22
+                      ? user.firstName + ' ' + user.lastName
+                      : (user.firstName + ' ' + user.lastName).substring(
+                          0,
+                          22
+                        ) + '...'}
+                  </span>
+                );
+              })}
           </div>
         </div>
       </section>

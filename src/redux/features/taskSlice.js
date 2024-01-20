@@ -90,12 +90,8 @@ export const taskSlice = createSlice({
     builder.addCase(deleteTask.fulfilled, (state, { payload }) => {
       state.deleteTaskStatus = REDUX_STATUSES.fulfilled;
       if (!payload) return;
-      state.tasks = state.tasks.map((task) => {
-        if (task.id !== payload) {
-          return task;
-        }
-        return;
-      });
+      console.log(payload);
+      state.tasks = state.tasks.filter((task) => task.id !== payload);
     });
     builder.addCase(deleteTask.rejected, (state) => {
       state.deleteTaskStatus = REDUX_STATUSES.rejected;

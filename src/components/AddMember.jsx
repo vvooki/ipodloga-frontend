@@ -1,10 +1,16 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import './css/modal.css';
 import { AiOutlineCloseCircle } from 'react-icons/ai';
 import { MdOutlineAddBox } from 'react-icons/md';
 import axios from 'axios';
 import toast from 'react-hot-toast';
-const AddMember = ({ show, close, projectId, updateMembers }) => {
+import { AuthContext } from '../context/AuthContext';
+import { useAppDispatch } from '../hooks/useRedux';
+import { getProjectMembers } from '../redux/thunks/projectThunk';
+const AddMember = ({ show, close, projectId, members }) => {
+  const { currentUser } = useContext(AuthContext);
+  const dispatch = useAppDispatch();
+
   const [name, setName] = useState('');
   const [fetchedUsers, setFetchedUsers] = useState([]);
   const [userList, setUserList] = useState([]);
@@ -15,13 +21,21 @@ const AddMember = ({ show, close, projectId, updateMembers }) => {
     try {
       for (let i = 0; i < userList.length; i++) {
         const res = await axios.post(
-          `http://localhost:8080/student/${userList[i].id}/projekty/${projectId}`
+          `http://localhost:8080/api/student-projects/add`,
+          { studentId: userList[i].id, projectId },
+          {
+            headers: {
+              authorization: `Bearer ${currentUser.accessToken}`,
+            },
+          }
         );
       }
       toast.success('Success! Users has been added');
       setUserList([]);
-      updateMembers();
-      close(2);
+      dispatch(
+        getProjectMembers({ projectId, token: currentUser.accessToken })
+      );
+      close();
     } catch (error) {
       console.log(error);
     }
@@ -43,8 +57,15 @@ const AddMember = ({ show, close, projectId, updateMembers }) => {
 
   const getUsers = async () => {
     try {
-      const res = await axios.get(`http://localhost:8080/student`);
-      setFetchedUsers(res.data);
+      const res = await axios.get(`http://localhost:8080/api/students`, {
+        headers: {
+          authorization: `Bearer ${currentUser.accessToken}`,
+        },
+      });
+      console.log(res.data, members);
+      const membersIds = members.map((obj) => obj.id);
+      const newUsers = res.data.filter((obj) => !membersIds.includes(obj.id));
+      setFetchedUsers(newUsers);
     } catch (error) {
       console.log(error);
     }
@@ -54,84 +75,85 @@ const AddMember = ({ show, close, projectId, updateMembers }) => {
     getUsers();
   }, []);
 
-  return (
-    <section className={`project-form-section ${show}`}>
-      <div className="project-form-container">
-        <div className="top-container">
-          <h2>ADD USER TO PROJECT</h2>
-          <button className="close-modal-btn" onClick={() => close(2)}>
-            <AiOutlineCloseCircle />
-          </button>
-        </div>
-        <div className="form">
-          {userList.length > 0 ? (
-            <datalist className="users-to-add-container">
-              <p>List of users to add to the project:</p>
-              <div className="users-to-add-list">
-                {userList.map((user) => {
-                  return (
-                    <span
-                      key={user.id}
-                      onClick={() => removeUserFromList(user)}
-                    >
-                      {user.imie} {user.nazwisko}
-                    </span>
-                  );
-                })}
-                <button
-                  className="add-users-btn"
-                  onClick={handleAddUsersToProject}
-                >
-                  add above users to the project
-                </button>
-              </div>
-            </datalist>
-          ) : (
-            ''
-          )}
-          <span>
-            <label htmlFor="name">Find user</label>
-            <input
-              type="text"
-              name="name"
-              id="name"
-              placeholder="Username..."
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
-          </span>
-
-          <section className="user-list">
-            <div className="user-table-header">
-              <p>ID</p>
-              <p>NAME</p>
-              <p>SURNAME</p>
-              <p>EMAIL</p>
-              <p>ADD USER</p>
-            </div>
-
-            {fetchedUsers.map((user) => {
-              return (
-                <div
-                  className="user-row"
-                  key={user.id}
-                  onClick={() => addToList(user)}
-                >
-                  <p>{user.id.substring(0, 4)}...</p>
-                  <p>{user.imie}</p>
-                  <p>{user.nazwisko}</p>
-                  <p>{user.email}</p>
-                  <button>
-                    <MdOutlineAddBox className="add-user-btn" />
+  if (show)
+    return (
+      <section className={`project-form-section grid`}>
+        <div className="project-form-container">
+          <div className="top-container">
+            <h2>ADD USER TO PROJECT</h2>
+            <button className="close-modal-btn" onClick={() => close(2)}>
+              <AiOutlineCloseCircle />
+            </button>
+          </div>
+          <div className="form">
+            {userList.length > 0 ? (
+              <datalist className="users-to-add-container">
+                <p>List of users to add to the project:</p>
+                <div className="users-to-add-list">
+                  {userList.map((user) => {
+                    return (
+                      <span
+                        key={user.id}
+                        onClick={() => removeUserFromList(user)}
+                      >
+                        {user.firstName} {user.lastName}
+                      </span>
+                    );
+                  })}
+                  <button
+                    className="add-users-btn"
+                    onClick={handleAddUsersToProject}
+                  >
+                    add above users to the project
                   </button>
                 </div>
-              );
-            })}
-          </section>
+              </datalist>
+            ) : (
+              ''
+            )}
+            <span>
+              <label htmlFor="name">Find user</label>
+              <input
+                type="text"
+                name="name"
+                id="name"
+                placeholder="Username..."
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+            </span>
+
+            <section className="user-list">
+              <div className="user-table-header">
+                <p>ID</p>
+                <p>NAME</p>
+                <p>SURNAME</p>
+                <p>EMAIL</p>
+                <p>ADD USER</p>
+              </div>
+
+              {fetchedUsers.map((user) => {
+                return (
+                  <div
+                    className="user-row"
+                    key={user.id}
+                    onClick={() => addToList(user)}
+                  >
+                    <p className="flex items-center">{user.id}</p>
+                    <p className="flex items-center">{user.firstName}</p>
+                    <p className="flex items-center">{user.lastName}</p>
+                    <p className="flex items-center">{user.email}</p>
+                    <button className="flex justify-center items-center mx-auto">
+                      <MdOutlineAddBox className="add-user-btn" />
+                    </button>
+                  </div>
+                );
+              })}
+            </section>
+          </div>
         </div>
-      </div>
-    </section>
-  );
+      </section>
+    );
 };
 
 export default AddMember;

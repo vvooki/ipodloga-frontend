@@ -5,17 +5,20 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 import { useAppDispatch, useAppSelector } from '../hooks/useRedux';
 import {
+  addTask,
   deleteTask,
+  getProjectTasks,
   removeStudentFromTask,
   removeTaskFromProject,
+  updateTask,
 } from '../redux/thunks/taskThunk';
 import { AuthContext } from '../context/AuthContext';
 
 const AddTask = ({ show, close, projectId, isEdit }) => {
-  const [name, setName] = useState();
+  const [name, setName] = useState('');
   const [type, setType] = useState('TASK');
-  const [deadline, setDeadline] = useState('');
-  const [status, setStatus] = useState('ON_GOING');
+  const [deadline, setDeadline] = useState(new Date().toISOString());
+  const [status, setStatus] = useState('TO-DO');
   const [priority, setPriority] = useState('HIGH');
   const [description, setDescription] = useState('');
 
@@ -27,23 +30,21 @@ const AddTask = ({ show, close, projectId, isEdit }) => {
 
   const handleAddTask = async (e) => {
     e.preventDefault();
-    const d1 = deadline.split('-', 3);
     const data = {
-      id: '1',
-      nazwa: name,
-      opis: description,
-      status: status,
-      priority: priority,
-      type: type,
-      projektId: projectId,
-      deadline: d1[2] + '.' + d1[1] + '.' + d1[0],
+      id: task ? task.id : null,
+      name,
+      description,
+      sequence: 1,
+      task_status: status,
+      task_priority: priority,
+      task_type: type,
+      project_id: projectId,
+      student_id: task ? task.student_id : 0,
+      deadline: deadline,
     };
     if (isEdit) {
       try {
-        const res = await axios.put(
-          `http://localhost:8080/zadania/zadanie/${task.id}`,
-          data,
-        );
+        dispatch(updateTask({ task: data, token: currentUser.accessToken }));
         toast.success('Success! Task has been updated');
         close();
       } catch (error) {
@@ -51,7 +52,7 @@ const AddTask = ({ show, close, projectId, isEdit }) => {
       }
     } else {
       try {
-        const res = await axios.post(`http://localhost:8080/zadania`, data);
+        dispatch(addTask({ task: data, token: currentUser.accessToken }));
         toast.success('Success! New task has been created');
         close();
       } catch (error) {
@@ -62,19 +63,20 @@ const AddTask = ({ show, close, projectId, isEdit }) => {
 
   const handleDeleteTask = async () => {
     if (!task || !currentUser) return;
-    // dispatch(removeStudentFromTask({ taskId:task.id, studentId: current token: currentUser.accessToken }));
-    dispatch(
-      removeTaskFromProject({
-        taskId: task.id,
-        projectId: projectId,
-        token: currentUser.accessToken,
-      }),
-    );
-    // dispatch(deleteTask({ id: task.id, token: currentUser.accessToken }));
+    dispatch(deleteTask({ id: task.id, token: currentUser.accessToken }));
     toast('Task has been removed', {
       icon: '🗑️',
     });
     close();
+  };
+
+  const clearInputs = () => {
+    setName('');
+    setType('TASK');
+    setPriority('HIGH');
+    setStatus('TO-DO');
+    setDeadline(new Date().toISOString());
+    setDescription('');
   };
 
   useEffect(() => {
@@ -85,15 +87,14 @@ const AddTask = ({ show, close, projectId, isEdit }) => {
       setStatus(task.task_status);
       setDeadline(task.deadline);
       setDescription(task.description);
-    } else {
-      setName('');
-      setType('TASK');
-      setPriority('HIGH');
-      setStatus('ON_GOING');
-      setDeadline('');
-      setDescription('');
     }
   }, [task]);
+
+  useEffect(() => {
+    if (show) {
+      clearInputs();
+    }
+  }, [show]);
 
   if (show)
     return (

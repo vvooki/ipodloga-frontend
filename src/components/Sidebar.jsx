@@ -37,32 +37,47 @@ const Sidebar = () => {
       </div>
 
       <ul className="sidebarList">
-        <NavLink to="/" className={({ isActive }) => isActive && 'active'}>
+        <NavLink
+          to="/"
+          className={({ isActive }) => (isActive ? 'active' : '')}
+        >
           <li>
             <MdOutlineBookmarks /> Projects
           </li>
         </NavLink>
-        <NavLink to="tasks" className={({ isActive }) => isActive && 'active'}>
+        <NavLink
+          to="tasks"
+          className={({ isActive }) => (isActive ? 'active' : '')}
+        >
           <li>
             <MdTaskAlt /> Tasks
           </li>
         </NavLink>
-        <NavLink to="board" className={({ isActive }) => isActive && 'active'}>
+        <NavLink
+          to="board"
+          className={({ isActive }) => (isActive ? 'active' : '')}
+        >
           <li>
             <MdCalendarViewWeek /> Kanban
           </li>
         </NavLink>
-        <NavLink to="chat" className={({ isActive }) => isActive && 'active'}>
+        <NavLink
+          to="chat"
+          className={({ isActive }) => (isActive ? 'active' : '')}
+        >
           <li>
             <MdOutlineChat /> Chat
           </li>
         </NavLink>
 
-        <Link to="users" className={({ isActive }) => isActive && 'active'}>
+        <NavLink
+          to="users"
+          className={({ isActive }) => (isActive ? 'active' : '')}
+        >
           <li>
             <MdTagFaces /> {currentUser.isAdmin ? 'Users' : 'Edit profile'}
           </li>
-        </Link>
+        </NavLink>
       </ul>
 
       <button className="logout-btn" onClick={handleSignOut}>
