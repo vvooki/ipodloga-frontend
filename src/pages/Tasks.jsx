@@ -4,14 +4,14 @@ import { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import { HiOutlineDotsCircleHorizontal } from 'react-icons/hi';
 import { RxAvatar } from 'react-icons/rx';
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import AddTask from '../components/AddTask';
 import AddMember from '../components/AddMember';
 import toast from 'react-hot-toast';
 import { AuthContext } from '../context/AuthContext';
 import { useAppDispatch, useAppSelector } from '../hooks/useRedux';
 import { format } from 'date-fns';
-import { getProjectTasks } from '../redux/thunks/taskThunk';
+import { getProjectTasks, updateTask } from '../redux/thunks/taskThunk';
 import { getProjectMembers } from '../redux/thunks/projectThunk';
 import { setTask } from '../redux/features/taskSlice';
 const Tasks = () => {
@@ -85,6 +85,12 @@ const Tasks = () => {
         />
         <div className="top-container">
           <h2>{project.name}</h2>
+          <Link
+            to={`/project/${projectId}/files`}
+            className="p-2 border hover:text-white text-slate-200 bg-slate-700 rounded-lg"
+          >
+            Browse Files
+          </Link>
         </div>
         <div className="tasks-container container">
           <div className="top-container">
@@ -119,7 +125,9 @@ const Tasks = () => {
                   task_type,
                   task_priority,
                   deadline,
+                  student_id,
                 } = task;
+                console.log(student_id);
                 return (
                   <div className="project-item table-grid" key={index}>
                     <span>
@@ -147,30 +155,37 @@ const Tasks = () => {
                       </p>
                     </span>
                     <span>
-                      {/* {
-                      <select
-                        name="user"
-                        value={studentId ? studentId : ''}
-                        onChange={(e) =>
-                          handleUpdateTaskUser(task, e.target.value)
-                        }
-                      >
-                        {members.map((member) => {
-                          return (
-                            <option value={member.id} key={member.id}>
-                              {member.imie} {member.nazwisko.substring(0, 1)}.
-                            </option>
-                          );
-                        })}
-                      </select>
-                    } */}
-                      test user
+                      {
+                        <select
+                          name="user"
+                          value={student_id !== 0 ? student_id : 0}
+                          onChange={(e) => {
+                            dispatch(
+                              updateTask({
+                                task: { ...task, student_id: e.target.value },
+                                token: currentUser.accessToken,
+                              }),
+                            );
+                          }}
+                        >
+                          <option value={0}>
+                            {student_id !== 0 ? 'Unassigned' : 'pick user'}
+                          </option>
+                          {members.map((member) => {
+                            return (
+                              <option value={member.id} key={member.id}>
+                                {member.lastName.substring(0, 15)}
+                              </option>
+                            );
+                          })}
+                        </select>
+                      }
                     </span>
                     <button
                       onClick={() => {
+                        setIsEdit(true);
                         dispatch(setTask(task));
                         setIsAddTaskModalVisible(true);
-                        setIsEdit(true);
                       }}
                     >
                       <p>
@@ -199,7 +214,7 @@ const Tasks = () => {
                       ? user.firstName + ' ' + user.lastName
                       : (user.firstName + ' ' + user.lastName).substring(
                           0,
-                          22
+                          22,
                         ) + '...'}
                   </span>
                 );

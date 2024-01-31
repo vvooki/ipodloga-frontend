@@ -11,6 +11,7 @@ import { AuthContext } from './context/AuthContext';
 import toast, { Toaster } from 'react-hot-toast';
 import AllUsers from './pages/AllUsers';
 import Kanban from './pages/Kanban';
+import Files from './pages/Files';
 function App() {
   const { currentUser } = useContext(AuthContext);
 
@@ -28,6 +29,7 @@ function App() {
           <Route index element={<Projects />} />
           <Route path="/home" element={<Projects />} />
           <Route path="/project/:idProject" element={<Tasks />} />
+          <Route path="/project/:idProject/files" element={<Files />} />
           <Route path="/chat" element={<Chat />} />
           <Route path="/tasks" element={<UserTasks />} />
           <Route path="/board" element={<Kanban />} />

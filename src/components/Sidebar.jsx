@@ -9,21 +9,20 @@ import {
   MdTagFaces,
   MdCalendarViewWeek,
 } from 'react-icons/md';
-import { auth } from '../firebase';
 import { AuthContext } from '../context/AuthContext';
 import { Link, NavLink, useLocation } from 'react-router-dom';
+import toast from 'react-hot-toast';
 const Sidebar = () => {
   const location = useLocation();
   const loc = location.pathname.split('/')[1];
 
   const { dispatch, currentUser } = useContext(AuthContext);
   const handleSignOut = () => {
-    auth
-      .signOut()
-      .then(() => {
-        dispatch({ type: 'LOGOUT' });
-      })
-      .catch((error) => alert(error.message));
+    try {
+      dispatch({ type: 'LOGOUT' });
+    } catch (error) {
+      toast.error(error);
+    }
   };
 
   return (

@@ -8,69 +8,59 @@ import axios from 'axios';
 import { type } from '@testing-library/user-event/dist/type';
 
 const Register = () => {
-  const [email, setEmail] = useState('test@mail.com');
-  const [password, setPassword] = useState('123456');
-  const [password2, setPassword2] = useState('123456');
-  const [name, setName] = useState('');
-  const [surname, setSurname] = useState('');
-  const [index, setIndex] = useState('');
-  const [uid, setUid] = useState('');
-  const [error, setError] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [password2, setPassword2] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [indexNumber, setIndexNumber] = useState('');
   let navigate = useNavigate();
-  const timerRef = useRef(null);
 
   const handleSignUp = async (e) => {
     e.preventDefault();
     try {
-      if (password === password2) {
-        const credentials = await auth.createUserWithEmailAndPassword(
-          email,
-          password
-        );
-        console.log(typeof credentials.user.uid);
-        setUid(credentials.user.uid);
-      } else {
-        toast.error('Passwords must be the same...');
+      if (password !== password2) {
+        toast.error('Passwords must be the same');
+        return;
       }
-    } catch (error) {
-      toast.error('Something went wrong...');
-    }
-    console.log('email', email);
-  };
+      const userCredentials = {
+        email,
+        password,
+        firstName,
+        lastName,
+        indexNumber,
+        isAdmin: false,
+        isFullTime: false,
+      };
 
-  const handleSaveUserToDb = async (e) => {
-    e.preventDefault();
-    const data = {
-      email: email,
-      imie: name,
-      nazwisko: surname,
-      nr_indeksu: index,
-      student_id: uid,
-    };
-    try {
-      const res = await axios.post(`http://localhost:8080/student`, data);
+      await axios.post(
+        'http://localhost:8080/api/auth/register',
+        userCredentials,
+      );
       navigate('/login');
       toast.success('Success! Account created.');
-    } catch (error) {}
+    } catch (error) {
+      toast.error(error);
+    }
   };
 
-  useEffect(() => {
-    // Clear the interval when the component unmounts
-    return () => clearTimeout(timerRef.current);
-  }, []);
-
   return (
-    <section className="login-section">
-      <div className="illustration-container">
-        <img src={illustration} alt="login illustration" />
+    <section className="flex items-center justify-center h-screen">
+      <div className="flex-1 hidden lg:grid bg-slate-100 h-full justify-center items-center">
+        <img
+          src={illustration}
+          alt="login illustration"
+          className="w-[65%] h-auto mx-auto"
+        />
       </div>
-      <div className="login-container">
+      <div className="login-container flex-1">
         <div className="login-text">
           <h2>Sign up to iPodloga</h2>
           <p>Start managing your projects with ease.</p>
         </div>
-        {uid === '' ? (
-          <form onSubmit={handleSignUp}>
+
+        <form onSubmit={handleSignUp}>
+          <div className="w-fit max-h-[400px] overflow-y-auto">
             <div>
               <label htmlFor="email">Email address:</label>
               <input
@@ -81,6 +71,43 @@ const Register = () => {
                 id="email"
                 placeholder="john@mail.com"
                 autoFocus
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="firstName">First Name:</label>
+              <input
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                type="text"
+                name="firstName"
+                id="firstName"
+                placeholder="John"
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="lastName">Last Name:</label>
+              <input
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                type="text"
+                name="lastName"
+                id="lastName"
+                placeholder="Doe"
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="index">Index Number:</label>
+              <input
+                value={indexNumber}
+                onChange={(e) => setIndexNumber(e.target.value)}
+                type="text"
+                name="indexNumber"
+                id="indexNumber"
+                placeholder="123456"
+                required
               />
             </div>
             <div>
@@ -92,6 +119,7 @@ const Register = () => {
                 name="password"
                 id="password"
                 placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;"
+                required
               />
             </div>
             <div>
@@ -103,49 +131,15 @@ const Register = () => {
                 name="password2"
                 id="password2"
                 placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;"
+                required
               />
             </div>
-            <button type="submit">Register</button>
-          </form>
-        ) : (
-          <form onSubmit={handleSaveUserToDb}>
-            <div>
-              <label htmlFor="name">Name:</label>
-              <input
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                type="text"
-                name="name"
-                id="name"
-                placeholder="Jan"
-                autoFocus
-              />
-            </div>
-            <div>
-              <label htmlFor="surname">Surname:</label>
-              <input
-                value={surname}
-                onChange={(e) => setSurname(e.target.value)}
-                type="text"
-                name="surname"
-                id="surname"
-                placeholder="Kowalski"
-              />
-            </div>
-            <div>
-              <label htmlFor="index">Student Index:</label>
-              <input
-                value={index}
-                onChange={(e) => setIndex(e.target.value)}
-                type="text"
-                name="index"
-                id="index"
-                placeholder="412865"
-              />
-            </div>
-            <button type="submit">Save</button>
-          </form>
-        )}
+          </div>
+          <button type="submit" className="w-full">
+            Register
+          </button>
+        </form>
+
         <Link to="/login">
           <p>
             Already have an account? <span>Sign in!</span>

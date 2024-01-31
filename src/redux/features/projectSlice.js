@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import {
   addProject,
+  getProject,
   getProjectMembers,
   getProjects,
   getProjectsForStudent,
@@ -26,6 +27,19 @@ export const projectSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
+    // getSingleProject
+    builder.addCase(getProject.pending, (state) => {
+      state.getProjectsStatus = REDUX_STATUSES.pending;
+    });
+    builder.addCase(getProject.fulfilled, (state, { payload }) => {
+      state.getProjectsStatus = REDUX_STATUSES.fulfilled;
+      if (!payload) return;
+      state.project = payload;
+    });
+    builder.addCase(getProject.rejected, (state) => {
+      state.getProjectsStatus = REDUX_STATUSES.rejected;
+    });
+
     // getProjectsList
     builder.addCase(getProjects.pending, (state) => {
       state.getProjectsStatus = REDUX_STATUSES.pending;

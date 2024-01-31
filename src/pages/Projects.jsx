@@ -167,7 +167,7 @@ const Projects = () => {
             );
           })}
         </div>
-        {currentUser.isAdmin && (
+        {currentUser.isAdmin ? (
           <footer>
             {pages.map((p) => {
               return (
@@ -181,7 +181,7 @@ const Projects = () => {
               );
             })}
           </footer>
-        )}
+        ) : null}
       </section>
     );
 };

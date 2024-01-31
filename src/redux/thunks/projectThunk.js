@@ -20,6 +20,22 @@ export const getProjects = createAsyncThunk(
   },
 );
 
+export const getProject = createAsyncThunk(
+  'project/getProject',
+  async ({ id, token }, { rejectWithValue }) => {
+    try {
+      const res = await axios.get(`http://localhost:8080/api/projects/${id}`, {
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+      });
+      return res.data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  },
+);
+
 export const getProjectsForStudent = createAsyncThunk(
   'project/getProjectsForStudent',
   async ({ id, page, limit, token }, { rejectWithValue }) => {

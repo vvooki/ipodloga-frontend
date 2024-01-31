@@ -79,6 +79,8 @@ const AddTask = ({ show, close, projectId, isEdit }) => {
     setDescription('');
   };
 
+  console.log();
+
   useEffect(() => {
     if (isEdit) {
       setName(task.name);
@@ -88,10 +90,10 @@ const AddTask = ({ show, close, projectId, isEdit }) => {
       setDeadline(task.deadline);
       setDescription(task.description);
     }
-  }, [task]);
+  }, [task, isEdit]);
 
   useEffect(() => {
-    if (show) {
+    if (!show) {
       clearInputs();
     }
   }, [show]);
