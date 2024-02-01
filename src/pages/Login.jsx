@@ -1,10 +1,11 @@
-import { useContext, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import illustration from './../images/login-illustration.svg';
 import './css/Login.css';
 import { Link, useNavigate } from 'react-router-dom';
 import { auth } from '../firebase';
 import toast, { Toaster } from 'react-hot-toast';
 import { AuthContext } from '../context/AuthContext';
+import axios from 'axios';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -13,25 +14,37 @@ const Login = () => {
 
   const { dispatch } = useContext(AuthContext);
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    auth
-      .signInWithEmailAndPassword(email, password)
-      .then((userCredentials) => {
-        const user = userCredentials.user;
-        dispatch({ type: 'LOGIN', payload: user });
-        console.log('Logged as', user.email);
-        navigate('/');
-      })
-      .catch((error) => toast.error('Wrong email and password...'));
+    try {
+      const userCredentials = {
+        email,
+        password,
+      };
+
+      const user = await axios.post(
+        'http://localhost:8080/api/auth/login',
+        userCredentials,
+      );
+      dispatch({ type: 'LOGIN', payload: user.data });
+      console.log('Logged as', user.email);
+      navigate('/');
+    } catch (error) {
+      console.log(error);
+      toast.error('Wrong email or password');
+    }
   };
 
   return (
-    <section className="login-section">
-      <div className="illustration-container">
-        <img src={illustration} alt="login illustration" />
+    <section className="flex items-center justify-center h-screen">
+      <div className="flex-1 hidden lg:grid bg-slate-100 h-full justify-center items-center">
+        <img
+          src={illustration}
+          alt="login illustration"
+          className="w-[65%] h-auto mx-auto"
+        />
       </div>
-      <div className="login-container">
+      <div className="login-container flex-1">
         <div className="login-text">
           <h2>Sign in to iPodloga</h2>
           <p>Start managing your projects with ease.</p>
@@ -60,7 +73,9 @@ const Login = () => {
               placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;"
             />
           </div>
-          <button type="submit">Login</button>
+          <button type="submit" className="w-full">
+            Login
+          </button>
         </form>
         <Link to="/register">
           <p>

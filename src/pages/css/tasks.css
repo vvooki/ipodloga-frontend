@@ -1,8 +1,8 @@
 .tasks-section {
   display: grid;
   grid-template-areas:
-    'a a a a a a'
-    'b b b b c c';
+    'a a a a a a a a'
+    'b b b b b c c c';
   gap: 1rem;
 }
 
@@ -38,4 +38,59 @@
   display: flex;
   align-items: center;
   gap: 1rem;
+}
+
+.table-grid span {
+  margin: 1rem 0;
+}
+
+.table-grid select {
+  border-radius: 0.25rem;
+  padding: 0.2rem 0.4rem;
+  text-align: center;
+  outline: none;
+  border: none;
+  background-color: #484848;
+  color: #ffffff;
+}
+
+.project-item .badge {
+  padding: 0.1rem 0.5rem;
+  border-radius: 0.4rem;
+}
+
+.TASK {
+  border: 1px solid black;
+  color: #157afe;
+}
+
+.ERROR {
+  border: 1px solid black;
+  color: #fe0c0c;
+}
+
+.HIGH {
+  background-color: #1bc735;
+  color: white;
+}
+
+.MEDIUM {
+  background-color: #e3922f;
+  color: white;
+}
+
+.LOW {
+  background-color: #ffee8d;
+}
+
+.IN-PROGRESS {
+  background-color: #eacfff;
+}
+
+.TO-DO {
+  background-color: #ccccce;
+}
+
+.DONE {
+  background-color: #e1feb1;
 }
