@@ -64,9 +64,10 @@ const Tasks = () => {
   };
 
   useEffect(() => {
+    if (!currentUser || !projectId) return;
     dispatch(getProjectMembers({ projectId, token }));
     dispatch(getProjectTasks({ projectId, token }));
-  }, [dispatch, projectId, token]);
+  }, [currentUser, dispatch, projectId, token]);
 
   if (project && tasks)
     return (

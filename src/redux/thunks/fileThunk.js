@@ -25,7 +25,7 @@ export const addFile = createAsyncThunk(
   async ({ projectId, fileUrl, token }, { rejectWithValue }) => {
     try {
       console.log(projectId, fileUrl);
-      const data = { project_id: projectId, file_url: fileUrl };
+      const data = { projectId, file_url: fileUrl };
       const res = await axios.post(`http://localhost:8080/api/files`, data, {
         headers: {
           authorization: `Bearer ${token}`,

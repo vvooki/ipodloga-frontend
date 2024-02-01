@@ -54,8 +54,14 @@ const Files = () => {
 
         dispatch(
           addFile({
-            projectId: project.id,
+            projectId: projectId,
             fileUrl: file_url,
+            token: currentUser.accessToken,
+          }),
+        );
+        dispatch(
+          getFilesForProject({
+            projectId: projectId,
             token: currentUser.accessToken,
           }),
         );
@@ -68,10 +74,10 @@ const Files = () => {
     }
   };
 
-  useEffect(() => {
-    if (project) return;
-    dispatch(getProject({ id: projectId, token: currentUser.accessToken }));
-  }, [project, dispatch, projectId, currentUser.accessToken]);
+  // useEffect(() => {
+  //   if (project) return;
+  //   dispatch(getProject({ id: projectId, token: currentUser.accessToken }));
+  // }, [project, dispatch, projectId, currentUser.accessToken]);
 
   useEffect(() => {
     if (isLoading) {
@@ -86,8 +92,15 @@ const Files = () => {
   }, [file]);
 
   useEffect(() => {
-    dispatch(getFilesForProject({ projectId, token: currentUser.accessToken }));
+    dispatch(
+      getFilesForProject({
+        projectId: projectId,
+        token: currentUser.accessToken,
+      }),
+    );
   }, []);
+
+  console.log(files);
 
   if (project)
     return (
@@ -111,9 +124,16 @@ const Files = () => {
             Upload file
           </label>
         </div>
-        <div>
+        <div className="flex flex-wrap mt-4 gap-4">
           {files.map((file) => {
-            return <div>{file.id}</div>;
+            return (
+              <img
+                key={file.id}
+                src={file.file_url}
+                alt="img"
+                className="w-60 h-auto"
+              />
+            );
           })}
         </div>
       </div>

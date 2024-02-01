@@ -26,18 +26,18 @@ export const fileSlice = createSlice({
       state.getFilesStatus = REDUX_STATUSES.rejected;
     });
 
-    // createFile
-    builder.addCase(addFile.pending, (state) => {
-      state.createFileStatus = REDUX_STATUSES.pending;
-    });
-    builder.addCase(addFile.fulfilled, (state, { payload }) => {
-      state.createFileStatus = REDUX_STATUSES.fulfilled;
-      if (!payload) return;
-      state.files = state.files.push(payload);
-    });
-    builder.addCase(addFile.rejected, (state) => {
-      state.createFileStatus = REDUX_STATUSES.rejected;
-    });
+    // // createFile
+    // builder.addCase(addFile.pending, (state) => {
+    //   state.createFileStatus = REDUX_STATUSES.pending;
+    // });
+    // builder.addCase(addFile.fulfilled, (state, { payload }) => {
+    //   state.createFileStatus = REDUX_STATUSES.fulfilled;
+    //   if (!payload) return;
+    //   state.files = state.files.push(payload);
+    // });
+    // builder.addCase(addFile.rejected, (state) => {
+    //   state.createFileStatus = REDUX_STATUSES.rejected;
+    // });
 
     // // deleteTask
     // builder.addCase(deleteTask.pending, (state) => {
