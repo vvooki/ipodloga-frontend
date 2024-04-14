@@ -1,0 +1,135 @@
+.chat-section {
+  display: grid;
+  grid-template-columns: 30% 70%;
+  grid-auto-flow: column;
+  min-height: 100%;
+  min-width: 100%;
+  min-height: 85vh;
+  max-height: 85vh;
+  border-radius: 1rem;
+  border: 1px solid rgba(0, 0, 0, 0.141);
+  overflow: hidden;
+}
+
+.chats-list {
+  background-color: #f4f4f4;
+  width: 100%;
+  height: 100%;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.chat-name {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.187);
+  font-size: 1.2rem;
+  padding: 0.5rem 0.5rem;
+  cursor: pointer;
+}
+
+.chat-name:hover {
+  background-color: #dedcff;
+  border-radius: 0.4rem;
+}
+
+.chat-window {
+  display: grid;
+  grid-template-rows: 10% 80% 10%;
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.chat-window-name {
+  display: flex;
+  justify-content: space-between;
+  place-items: center;
+  width: 95%;
+  margin: 0 auto;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.187);
+}
+
+.chat-window-name button {
+  font-size: 1.4rem;
+  display: grid;
+  place-items: center;
+}
+
+.chat-window-name button:hover {
+  color: #8b85f5;
+}
+
+.messages-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 2rem;
+  overflow-y: auto;
+  max-height: 75vh;
+}
+
+.messages-container > span {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.user-prompt h4 {
+  text-align: right;
+  padding: 0 0.3rem;
+}
+
+.others-prompt h4 {
+  padding: 0 0.3rem;
+}
+
+.message-text {
+  border-radius: 1rem;
+  padding: 0.5rem;
+  width: fit-content;
+  max-width: 50%;
+}
+
+.user-message {
+  background-color: #d9d7ff;
+  margin-left: auto;
+}
+
+.others-message {
+  border: 2px solid rgba(0, 0, 0, 0.187);
+  margin-right: auto;
+}
+
+.input-container {
+  min-width: 0;
+  min-height: 0;
+  padding: 1rem;
+  background-color: var(--clr-primary-black);
+  color: var(--clr-primary-white);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}
+
+.input-container input {
+  width: 100%;
+  background-color: var(--clr-primary-black);
+  border: 2px solid var(--clr-primary-white);
+  border-radius: 1rem;
+  padding: 0.4rem 1rem;
+  font-size: 1.1rem;
+  color: var(--clr-primary-white);
+  max-height: 2rem;
+  outline: none;
+}
+
+.input-container button {
+  font-size: 1.7rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

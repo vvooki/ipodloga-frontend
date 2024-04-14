@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 *,
 ::after,
 ::before {
@@ -117,11 +121,27 @@ img {
 }
 
 button {
-  all: unset;
+  cursor: pointer;
 }
 
-button {
-  cursor: pointer;
+/* width */
+::-webkit-scrollbar {
+  width: 7px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f7f7f7;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
 
 .dashboard {
@@ -138,4 +158,5 @@ button {
 
 main {
   margin: 1rem;
+  height: 100%;
 }

@@ -1,95 +1,229 @@
 import { MdOutlineAddBox } from 'react-icons/md';
 import './css/tasks.css';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import { HiOutlineDotsCircleHorizontal } from 'react-icons/hi';
 import { RxAvatar } from 'react-icons/rx';
-
+import { Link, useLocation } from 'react-router-dom';
+import AddTask from '../components/AddTask';
+import AddMember from '../components/AddMember';
+import toast from 'react-hot-toast';
+import { AuthContext } from '../context/AuthContext';
+import { useAppDispatch, useAppSelector } from '../hooks/useRedux';
+import { format } from 'date-fns';
+import { getProjectTasks, updateTask } from '../redux/thunks/taskThunk';
+import { getProjectMembers } from '../redux/thunks/projectThunk';
+import { setTask } from '../redux/features/taskSlice';
 const Tasks = () => {
-  const [data, setData] = useState([]);
-  const getProjects = async () => {
-    try {
-      const res = await axios.get(`http://localhost:8080/projekty`);
-      setData(res.data);
-    } catch (error) {
-      console.log(error);
+  const { currentUser } = useContext(AuthContext);
+  const location = useLocation();
+  const projectId = location.pathname.split('/')[2];
+  const defaultEditData = {
+    isEdit: false,
+    deadline: '',
+    nazwa: '',
+    opis: '',
+    priority: '',
+    status: '',
+    type: '',
+  };
+  const [editData, setEditData] = useState(defaultEditData);
+  const [showTasks, setShowTasks] = useState('modal-hide');
+  const [showMember, setShowMember] = useState('modal-hide');
+
+  const [isAddTaskModalVisible, setIsAddTaskModalVisible] = useState(false);
+  const [isAddMemberModalVisible, setisAddMemberModalVisible] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
+
+  const project = useAppSelector((state) => state.project.project);
+  const tasks = useAppSelector((state) => state.task.tasks);
+  const members = useAppSelector((state) => state.project.projectMembersList);
+  const token = currentUser?.accessToken;
+
+  const dispatch = useAppDispatch();
+
+  const handleModal = (modal) => {
+    if (currentUser.isAdmin) {
+      if (modal === 1) {
+        if (showTasks === 'modal-hide') {
+          setShowTasks('modal-show');
+        } else {
+          setShowTasks('modal-hide');
+          setEditData(defaultEditData);
+        }
+      } else if (modal === 2) {
+        if (showMember === 'modal-hide') {
+          setShowMember('modal-show');
+        } else {
+          setShowMember('modal-hide');
+        }
+      }
+    } else {
+      toast.error('You need admin permissions to open this window');
     }
   };
 
   useEffect(() => {
-    getProjects();
-  }, []);
+    if (!currentUser || !projectId) return;
+    dispatch(getProjectMembers({ projectId, token }));
+    dispatch(getProjectTasks({ projectId, token }));
+  }, [currentUser, dispatch, projectId, token]);
 
-  return (
-    <section className="tasks-section">
-      <div className="top-container">
-        <h2>Name of the project</h2>
-      </div>
-      <div className="tasks-container container">
+  if (project && tasks)
+    return (
+      <section className="tasks-section">
+        <AddTask
+          show={isAddTaskModalVisible}
+          close={() => setIsAddTaskModalVisible(false)}
+          isEdit={isEdit}
+          projectId={projectId}
+        />
+        <AddMember
+          show={isAddMemberModalVisible}
+          close={() => setisAddMemberModalVisible(false)}
+          projectId={projectId}
+          members={members}
+        />
         <div className="top-container">
-          <h3>Tasks</h3>
-          <button>
-            CREATE NEW TASK <MdOutlineAddBox className="add-icon" />
-          </button>
+          <h2>{project.name}</h2>
+          <Link
+            to={`/project/${projectId}/files`}
+            className="p-2 border hover:text-white text-slate-200 bg-slate-700 rounded-lg"
+          >
+            Browse Files
+          </Link>
         </div>
-        <div className="table-header table-grid">
-          <p>name</p>
-          <p>type</p>
-          <p>Priority</p>
-          <p>description</p>
-          <p>deadline</p>
-          <p>status</p>
-          <p>options</p>
-        </div>
-        {data.map((project) => {
-          const { id, nazwa, opis, dataczas_utworzenia, status } = project;
-          return (
-            <div className="project-item table-grid" key={id}>
-              <p>{nazwa}</p>
-              <span>
-                <p className={`status ${status ? 'in-progress' : 'finished'}`}>
-                  {status ? 'finished' : 'in progress'}
-                </p>
-              </span>
-              <span>
-                <p className={`status ${status ? 'in-progress' : 'finished'}`}>
-                  {status ? 'finished' : 'in progress'}
-                </p>
-              </span>
-              {opis.length > 40 ? `${opis.substring(0, 40)}...` : `${opis}`}
-              <p>{dataczas_utworzenia}</p>
-              <span>
-                <p className={`status ${status ? 'in-progress' : 'finished'}`}>
-                  {status ? 'finished' : 'in progress'}
-                </p>
-              </span>
-              <button>
-                <p className="status">
-                  <HiOutlineDotsCircleHorizontal />
-                </p>
-              </button>
-            </div>
-          );
-        })}
-      </div>
-      <div className="members-container container">
-        <div className="top-container">
-          <h3>Members</h3>
-          <button>
-            <MdOutlineAddBox className="add-icon" />
-          </button>
-        </div>
-        <div className="members">
-          <div className="user">
-            <RxAvatar className="user-icon" /> John Cena
+        <div className="tasks-container container">
+          <div className="top-container">
+            <h3>Tasks</h3>
+            <button
+              onClick={() => {
+                setIsAddTaskModalVisible(true);
+                setIsEdit(false);
+              }}
+            >
+              CREATE NEW TASK <MdOutlineAddBox className="add-icon" />
+            </button>
           </div>
-          <div className="user">
-            <RxAvatar className="user-icon" /> Mariusz Pudz...
+          <div className="table-header table-grid">
+            <p>name</p>
+            <p>type</p>
+            <p>Priority</p>
+            <p>description</p>
+            <p>deadline</p>
+            <p>status</p>
+            <p>user</p>
+            <p>options</p>
+          </div>
+          <div className="tasks-list">
+            {tasks &&
+              tasks.map((task, index) => {
+                const {
+                  id,
+                  name,
+                  description,
+                  task_status,
+                  task_type,
+                  task_priority,
+                  deadline,
+                  student_id,
+                } = task;
+                console.log(student_id);
+                return (
+                  <div className="project-item table-grid" key={index}>
+                    <span>
+                      <p>{name}</p>
+                    </span>
+                    <span>
+                      <p className={`badge ${task_type}`}>{task_type}</p>
+                    </span>
+                    <span>
+                      <p className={`badge ${task_priority}`}>
+                        {task_priority}
+                      </p>
+                    </span>
+                    <span>
+                      {description.length > 40
+                        ? `${description.substring(0, 40)}...`
+                        : `${description}`}
+                    </span>
+                    <span>
+                      <p>{format(deadline, 'dd.MM.yyyy')}</p>
+                    </span>
+                    <span>
+                      <p className={`badge ${task_status}`}>
+                        {task_status.replace('_', ' ')}
+                      </p>
+                    </span>
+                    <span>
+                      {
+                        <select
+                          name="user"
+                          value={student_id !== 0 ? student_id : 0}
+                          onChange={(e) => {
+                            dispatch(
+                              updateTask({
+                                task: { ...task, student_id: e.target.value },
+                                token: currentUser.accessToken,
+                              }),
+                            );
+                          }}
+                        >
+                          <option value={0}>
+                            {student_id !== 0 ? 'Unassigned' : 'pick user'}
+                          </option>
+                          {members.map((member) => {
+                            return (
+                              <option value={member.id} key={member.id}>
+                                {member.lastName.substring(0, 15)}
+                              </option>
+                            );
+                          })}
+                        </select>
+                      }
+                    </span>
+                    <button
+                      onClick={() => {
+                        setIsEdit(true);
+                        dispatch(setTask(task));
+                        setIsAddTaskModalVisible(true);
+                      }}
+                    >
+                      <p>
+                        <HiOutlineDotsCircleHorizontal />
+                      </p>
+                    </button>
+                  </div>
+                );
+              })}
           </div>
         </div>
-      </div>
-    </section>
-  );
+        <div className="members-container container">
+          <div className="top-container">
+            <h3>Members</h3>
+            <button onClick={() => setisAddMemberModalVisible(true)}>
+              <MdOutlineAddBox className="add-icon" />
+            </button>
+          </div>
+          <div className="members">
+            {members &&
+              members.map((user) => {
+                return (
+                  <span className="user" key={user.id}>
+                    <RxAvatar className="user-icon" />
+                    {(user.firstName + ' ' + user.lastName).length <= 22
+                      ? user.firstName + ' ' + user.lastName
+                      : (user.firstName + ' ' + user.lastName).substring(
+                          0,
+                          22,
+                        ) + '...'}
+                  </span>
+                );
+              })}
+          </div>
+        </div>
+      </section>
+    );
 };
 
 export default Tasks;
